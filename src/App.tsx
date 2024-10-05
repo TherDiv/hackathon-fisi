@@ -8,7 +8,7 @@ import DetalleTema from './components/DetalleTema';
 import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
 import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
-import Chatbot from './components/chatbot';  // Cambiando la "C" a minúscula.
+import Chatbot from './components/Chatbot';  // Cambiando la "C" a minúscula.
 import { Tema } from './types';
 
 const App: React.FC = () => {
