@@ -17,7 +17,7 @@ const NavigationButton: React.FC = () => {
   return (
     <button
       onClick={handleNavigation}
-      className="absolute top-4 right-4 bg-green-500 text-white p-2 rounded hover:bg-green-600 transition"
+      className="absolute top-4 right-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
     >
       {location.pathname === '/agregar' ? 'Volver' : 'Realizar Pregunta'}
     </button>
