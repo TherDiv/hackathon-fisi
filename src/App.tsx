@@ -5,9 +5,10 @@ import { useParams } from 'react-router-dom'; // Importar `useParams` por separa
 import TemaLista from './components/TemaLista';
 import AgregarPregunta from './components/AgregarPregunta';
 import DetalleTema from './components/DetalleTema';
-import NavigationButton from './components/NavigationButton';
+import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
 import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
+import Chatbot from './components/chatbot';  // Cambiando la "C" a minúscula.
 import { Tema } from './types';
 
 const App: React.FC = () => {
@@ -77,6 +78,7 @@ const App: React.FC = () => {
       respuestas: []
     }
   ]);
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Estado para manejar el modal
 
@@ -101,6 +103,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <div className="container mx-auto p-4 pt-24 relative">
+        <NavigationButton /> {/* Título fijo del foro */}
         <Routes>
           {/* Ruta para login */}
           <Route path="/" element={isAuthenticated ? <Navigate to="/foro" replace /> : <Login />} />
@@ -111,10 +114,9 @@ const App: React.FC = () => {
             element={
               isAuthenticated ? (
                 <>
-                  <NavigationButton />
                   <button
                     onClick={openModal}
-                    className="bg-blue-500 text-white p-2 rounded mb-4"
+                    className="bg-blue-500 text-white p-4 rounded mb-6 fixed right-6 top-24 z-40"
                   >
                     Agregar Pregunta
                   </button>
@@ -135,6 +137,7 @@ const App: React.FC = () => {
             element={isAuthenticated ? <RenderDetalleTema temas={temas} /> : <Navigate to="/" replace />}
           />
         </Routes>
+        <Chatbot /> {/* Añadir el chatbot aquí para que siempre esté presente */}
       </div>
     </Router>
   );
