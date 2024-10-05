@@ -113,18 +113,21 @@ const App: React.FC = () => {
             path="/foro"
             element={
               isAuthenticated ? (
-                <>
-                  <button
-                    onClick={openModal}
-                    className="bg-blue-500 text-white p-4 rounded mb-6 fixed right-6 top-24 z-40"
-                  >
-                    Agregar Pregunta
-                  </button>
+                <div className="relative">
+                  <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
+                    <button
+                      onClick={openModal}
+                      className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg"
+                    >
+                      Agregar Pregunta
+                    </button>
+                  </div>
                   <TemaLista temas={temas} />
                   <Modal isOpen={isModalOpen} onClose={closeModal}>
                     <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
                   </Modal>
-                </>
+                </div>
               ) : (
                 <Navigate to="/" replace />
               )
