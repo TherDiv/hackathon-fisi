@@ -1,26 +1,11 @@
 // src/components/NavigationButton.tsx
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const NavigationButton: React.FC = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleNavigation = () => {
-    if (location.pathname === '/agregar') {
-      navigate('/'); // Navegar a la página principal si estás en agregar
-    } else {
-      navigate('/agregar'); // Navegar a agregar pregunta si estás en la página principal
-    }
-  };
-
   return (
-    <button
-      onClick={handleNavigation}
-      className="absolute top-4 right-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-    >
-      {location.pathname === '/agregar' ? 'Volver' : 'Realizar Pregunta'}
-    </button>
+    <div className="fixed top-0 left-0 w-full bg-blue-500 text-white p-4 shadow-md z-50">
+      <h1 className="text-center text-2xl font-bold">Foro FISI</h1>
+    </div>
   );
 };
 

@@ -100,7 +100,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="container mx-auto p-4 relative">
+      <div className="container mx-auto p-4 pt-24 relative">
         <Routes>
           {/* Ruta para login */}
           <Route path="/" element={isAuthenticated ? <Navigate to="/foro" replace /> : <Login />} />
@@ -111,7 +111,6 @@ const App: React.FC = () => {
             element={
               isAuthenticated ? (
                 <>
-                  <h1 className="text-3xl font-bold mb-5">Foro FISI</h1>
                   <NavigationButton />
                   <button
                     onClick={openModal}
