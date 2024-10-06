@@ -1,11 +1,11 @@
 // src/App.tsx
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { useParams, useNavigate } from 'react-router-dom'; // Importar `useParams` y `useNavigate`
+import { useParams, useNavigate } from 'react-router-dom';
 import TemaLista from './components/TemaLista';
 import AgregarPregunta from './components/AgregarPregunta';
-import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
-import Modal from './components/Modal'; // Importar el componente Modal
+import NavigationButton from './components/NavigationButton';
+import Modal from './components/Modal';
 import Login from './components/Login';
 import Chatbot from './components/Chatbot';  // Cambiando la "C" a minúscula.
 import { Tema } from './types';
@@ -77,129 +77,124 @@ const App: React.FC = () => {
       respuestas: []
     }
   ]);
+  
+// Manejo del estado de autenticación
+const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+useEffect(() => {
+  // Verificar si el usuario está autenticado al cargar la aplicación
+  const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+  setIsAuthenticated(authStatus);
+}, []);
 
-  useEffect(() => {
-    // Verificar si el usuario está autenticado al cargar la aplicación
-    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
-    setIsAuthenticated(authStatus);
-  }, []);
+const agregarTema = (nuevoTema: Tema) => {
+  setTemas(prevTemas => [...prevTemas, nuevoTema]);
+};
 
-  const agregarTema = (nuevoTema: Tema) => {
-    setTemas(prevTemas => [...prevTemas, nuevoTema]);
-  };
+const openModal = () => {
+  setIsModalOpen(true);
+};
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+const closeModal = () => {
+  setIsModalOpen(false);
+};
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+if (isAuthenticated === null) {
+  // Mostrar un estado de carga mientras verificamos la autenticación
+  return <div className="flex items-center justify-center h-screen">Cargando...</div>;
+}
 
-  if (isAuthenticated === null) {
-    // Mostrar un estado de carga mientras verificamos la autenticación
-    return <div className="flex items-center justify-center h-screen">Cargando...</div>;
-  }
+return (
+  <Router>
+    <div className="container mx-auto p-4 pt-24 relative">
+      <NavigationButton /> {/* Título fijo del foro */}
+      <Routes>
+        {/* Ruta para login */}
+        <Route
+          path="/"
+          element={!isAuthenticated ? <Login setIsAuthenticated={setIsAuthenticated} /> : <Navigate to="/foro" />}
+        />
 
-  return (
-    <Router>
-      <div className="container mx-auto p-4 pt-24 relative">
-        <NavigationButton /> {/* Título fijo del foro */}
-        <Routes>
-          {/* Ruta para login */}
-          <Route
-            path="/"
-            element={
-              !isAuthenticated ? (
-                <Login setIsAuthenticated={setIsAuthenticated} />
-              ) : (
-                <Navigate to="/foro" />
-              )
-            }
-          />
-
-          {/* Ruta para el foro principal */}
-          <Route
-            path="/foro"
-            element={
-              isAuthenticated ? (
-                <div className="relative">
-                  <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
-                    <button
-                      onClick={openModal}
-                      className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg"
-                    >
-                      Agregar Pregunta
-                    </button>
-                  </div>
-                  <TemaLista temas={temas} />
-                  <Modal isOpen={isModalOpen} onClose={closeModal}>
-                    <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
-                  </Modal>
+        {/* Ruta para el foro principal */}
+        <Route
+          path="/foro"
+          element={
+            isAuthenticated ? (
+              <div className="relative">
+                <div className="flex justify-between items-center mb-6">
+                  <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
+                  <button
+                    onClick={openModal}
+                    className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg"
+                  >
+                    Agregar Pregunta
+                  </button>
                 </div>
-              ) : (
-                <Navigate to="/" />
-              )
-            }
-          />
+                <TemaLista temas={temas} />
+                <Modal isOpen={isModalOpen} onClose={closeModal}>
+                  <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
+                </Modal>
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
 
-          {/* Ruta para ver detalles de un tema */}
-          <Route
-            path="/tema/:temaId"
-            element={
-              isAuthenticated ? <RenderDetalleTema temas={temas} /> : <Navigate to="/" />
-            }
-          />
-        </Routes>
-        <Chatbot /> {/* Añadir el chatbot aquí para que siempre esté presente */}
-      </div>
-    </Router>
-  );
+        {/* Ruta para ver detalles de un tema */}
+        <Route
+          path="/tema/:temaId"
+          element={
+            isAuthenticated ? <RenderDetalleTema temas={temas} /> : <Navigate to="/" />
+          }
+        />
+      </Routes>
+      <Chatbot /> {/* Añadir el chatbot aquí para que siempre esté presente */}
+    </div>
+  </Router>
+);
 };
 
 // Componente que maneja la lógica para obtener el tema y pasarlo a DetalleTema
 const RenderDetalleTema: React.FC<{ temas: Tema[] }> = ({ temas }) => {
-  const { temaId } = useParams<{ temaId: string }>();
-  const tema = temas.find((t) => t.id === Number(temaId));
-  const navigate = useNavigate(); // Agregar `useNavigate` para el botón de volver
+const { temaId } = useParams<{ temaId: string }>();
+const tema = temas.find((t) => t.id === Number(temaId));
+const navigate = useNavigate();
 
-  if (!tema) {
-    return <div>No se encontró el tema.</div>;
-  }
+if (!tema) {
+  return <div>No se encontró el tema.</div>;
+}
 
-  return (
-    <div className="p-4">
-      <button
-        onClick={() => navigate('/foro')}
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4 shadow-lg"
-      >
-        Volver
-      </button>
-      <div className="p-4 border rounded-lg shadow-md mb-5">
-        <h2 className="text-3xl font-bold">{tema.titulo}</h2>
-        <p className="text-gray-600">Autor: {tema.autor} | Fecha: {tema.fecha}</p>
-        <p className="mt-2">{tema.contenido}</p>
+return (
+  <div className="p-4">
+    <button
+      onClick={() => navigate('/foro')}
+      className="bg-blue-500 text-white px-4 py-2 rounded mb-4 shadow-lg"
+    >
+      Volver
+    </button>
+    <div className="p-4 border rounded-lg shadow-md mb-5">
+      <h2 className="text-3xl font-bold">{tema.titulo}</h2>
+      <p className="text-gray-600">Autor: {tema.autor} | Fecha: {tema.fecha}</p>
+      <p className="mt-2">{tema.contenido}</p>
 
-        <h3 className="font-bold text-lg mt-4">Respuestas:</h3>
-        <div className="mt-2">
-          {tema.respuestas.length === 0 ? (
-            <p className="text-gray-500">No hay respuestas aún.</p>
-          ) : (
-            tema.respuestas.map((respuesta, index) => (
-              <div key={index} className="border p-2 mb-2 rounded">
-                <p className="font-bold">{respuesta.autor}</p>
-                <p>{respuesta.contenido}</p>
-              </div>
-            ))
-          )}
-        </div>
+      <h3 className="font-bold text-lg mt-4">Respuestas:</h3>
+      <div className="mt-2">
+        {tema.respuestas.length === 0 ? (
+          <p className="text-gray-500">No hay respuestas aún.</p>
+        ) : (
+          tema.respuestas.map((respuesta, index) => (
+            <div key={index} className="border p-2 mb-2 rounded">
+              <p className="font-bold">{respuesta.autor}</p>
+              <p>{respuesta.contenido}</p>
+            </div>
+          ))
+        )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default App;
