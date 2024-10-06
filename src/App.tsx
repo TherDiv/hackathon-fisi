@@ -4,12 +4,13 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { useParams } from 'react-router-dom'; // Importar `useParams` por separado
 import TemaLista from './components/TemaLista';
 import AgregarPregunta from './components/AgregarPregunta';
-import DetalleTema from './components/DetalleTema';
 import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
 import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
 import Chatbot from './components/Chatbot'; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
 import { Tema } from './types';
+import { useNavigate } from 'react-router-dom';
+
 
 const App: React.FC = () => {
   const [temas, setTemas] = useState<Tema[]>([
@@ -79,11 +80,12 @@ const App: React.FC = () => {
     }
   ]);
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Estado para manejar el modal
+  
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Cambia `false` a `null` para indicar estado de carga
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // Obtener el estado de autenticación desde `localStorage`
+    // Verificar si el usuario está autenticado
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
   }, []);
@@ -99,6 +101,11 @@ const App: React.FC = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  if (isAuthenticated === null) {
+    // Mostrar un estado de carga mientras verificamos la autenticación
+    return <div className="flex items-center justify-center h-screen">Cargando...</div>;
+  }
 
   return (
     <Router>
@@ -150,12 +157,41 @@ const App: React.FC = () => {
 const RenderDetalleTema: React.FC<{ temas: Tema[] }> = ({ temas }) => {
   const { temaId } = useParams<{ temaId: string }>();
   const tema = temas.find((t) => t.id === Number(temaId));
+  const navigate = useNavigate(); // Agregar `useNavigate` para el botón de volver
 
   if (!tema) {
     return <div>No se encontró el tema.</div>;
   }
 
-  return <DetalleTema tema={tema} respuestas={tema.respuestas} />;
+  return (
+    <div className="p-4">
+      <button
+        onClick={() => navigate('/foro')}
+        className="bg-blue-500 text-white px-4 py-2 rounded mb-4 shadow-lg"
+      >
+        Volver
+      </button>
+      <div className="p-4 border rounded-lg shadow-md mb-5">
+        <h2 className="text-3xl font-bold">{tema.titulo}</h2>
+        <p className="text-gray-600">Autor: {tema.autor} | Fecha: {tema.fecha}</p>
+        <p className="mt-2">{tema.contenido}</p>
+
+        <h3 className="font-bold text-lg mt-4">Respuestas:</h3>
+        <div className="mt-2">
+          {tema.respuestas.length === 0 ? (
+            <p className="text-gray-500">No hay respuestas aún.</p>
+          ) : (
+            tema.respuestas.map((respuesta, index) => (
+              <div key={index} className="border p-2 mb-2 rounded">
+                <p className="font-bold">{respuesta.autor}</p>
+                <p>{respuesta.contenido}</p>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default App;

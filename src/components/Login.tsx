@@ -10,7 +10,7 @@ const Login: React.FC = () => {
     // Autenticación sin validaciones, simplemente establece el estado como autenticado
     localStorage.setItem('isAuthenticated', 'true');
     // Redirigir al foro principal después de "iniciar sesión"
-    navigate('/foro', { replace: true }); // Añadir `replace: true` para evitar ir hacia atrás al login
+    navigate('/foro', { replace: true });
   };
 
   return (
