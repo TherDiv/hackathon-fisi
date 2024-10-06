@@ -88,11 +88,12 @@ const App: React.FC = () => {
       topico: 'Becas' // Añadir la propiedad `topico`
     }
   ]);
-  
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    // Verificar si el usuario está autenticado al cargar la página
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
   }, []);
@@ -125,14 +126,25 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="container mx-auto p-4 pt-24 relative">
-        <NavigationButton />
-        <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/foro" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route
-            path="/foro"
-            element={
-              isAuthenticated ? (
+      <Routes>
+        {/* Ruta para el login */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/foro" replace />
+            ) : (
+              <Login setIsAuthenticated={setIsAuthenticated} />
+            )
+          }
+        />
+        {/* Ruta para el foro principal */}
+        <Route
+          path="/foro"
+          element={
+            isAuthenticated ? (
+              <div className="container mx-auto p-4 pt-24 relative">
+                <NavigationButton />
                 <div className="relative">
                   <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
@@ -145,18 +157,25 @@ const App: React.FC = () => {
                     <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
                   </Modal>
                 </div>
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/tema/:temaId"
-            element={isAuthenticated ? <RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} /> : <Navigate to="/" replace />}
-          />
-        </Routes>
-        <Chatbot />
-      </div>
+                <Chatbot />
+              </div>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        {/* Ruta para ver detalles de un tema */}
+        <Route
+          path="/tema/:temaId"
+          element={
+            isAuthenticated ? (
+              <RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+      </Routes>
     </Router>
   );
 };
