@@ -4,67 +4,68 @@ import { Tema } from '../types';
 
 interface AgregarPreguntaProps {
   agregarTema: (nuevoTema: Tema) => void;
-  onClose: () => void; // Propiedad para manejar el cierre del modal
+  onClose: () => void;
 }
 
 const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose }) => {
-  const [nombre, setNombre] = useState('Usuario'); // Valor predeterminado 'Usuario'
+  const [nombre, setNombre] = useState('Anónimo');
   const [pregunta, setPregunta] = useState('');
   const [contenido, setContenido] = useState('');
+  const [topico, setTopico] = useState(''); // Nuevo estado para el tópico
 
-  // Manejar el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pregunta) {
-      alert('Por favor, escribe un título para la pregunta');
-      return;
-    }
+    if (!pregunta.trim() || !topico) return; // Validar que haya una pregunta y un tópico
 
     const newTema: Tema = {
-      id: Date.now(), // Generar un ID único basado en el timestamp actual
+      id: Date.now(),
       titulo: pregunta,
       autor: nombre,
-      fecha: new Date().toLocaleDateString(), // Fecha actual
+      fecha: new Date().toLocaleDateString(),
       contenido: contenido,
-      respuestas: []
+      respuestas: [],
+      topico: topico // Añadir el tópico al nuevo tema
     };
 
-    agregarTema(newTema); // Llamar a la función para agregar la nueva pregunta al foro
-    onClose(); // Cerrar el modal después de agregar la pregunta
+    agregarTema(newTema);
+    onClose(); // Cerrar el modal
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded-lg shadow-md bg-white">
-      <h2 className="font-bold text-xl mb-4">Añadir Pregunta</h2>
+    <form onSubmit={handleSubmit} className="mb-5 p-4 border rounded-lg shadow-md">
+      <h2 className="font-bold text-xl mb-2">Añadir Pregunta</h2>
       <input
         type="text"
         placeholder="Nombre (opcional)"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
-        className="border mb-4 p-2 w-full rounded"
-      />
-      <input
-        type="text"
-        placeholder="Título de la pregunta"
-        value={pregunta}
-        onChange={(e) => setPregunta(e.target.value)}
-        className="border mb-4 p-2 w-full rounded"
-        required
+        className="border mb-2 p-2 w-full rounded"
       />
       <textarea
-        placeholder="Contenido adicional (opcional)"
+        placeholder="Escribe tu pregunta"
+        value={pregunta}
+        onChange={(e) => setPregunta(e.target.value)}
+        className="border mb-2 p-2 w-full rounded"
+      />
+      <textarea
+        placeholder="Contenido adicional"
         value={contenido}
         onChange={(e) => setContenido(e.target.value)}
-        className="border mb-4 p-2 w-full rounded"
+        className="border mb-2 p-2 w-full rounded"
       />
-      <div className="flex justify-end">
-        <button type="button" onClick={onClose} className="bg-gray-500 text-white p-2 rounded mr-2">
-          Cancelar
-        </button>
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Añadir
-        </button>
-      </div>
+      <select
+        value={topico}
+        onChange={(e) => setTopico(e.target.value)}
+        className="border mb-2 p-2 w-full rounded"
+      >
+        <option value="">Selecciona un tópico</option>
+        <option value="Matrícula">Matrícula</option>
+        <option value="Becas">Becas</option>
+        <option value="Aplazados">Aplazados</option>
+      </select>
+      <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">
+        Añadir
+      </button>
     </form>
   );
 };
