@@ -1,7 +1,7 @@
 // src/App.tsx
-import React, { useState, useEffect } from 'react'; // Añadir `useEffect` aquí
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom'; // Importar `useParams` por separado
+import { useParams, useNavigate } from 'react-router-dom'; // Importar `useParams` y `useNavigate`
 import TemaLista from './components/TemaLista';
 import AgregarPregunta from './components/AgregarPregunta';
 import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
@@ -9,8 +9,6 @@ import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
 import Chatbot from './components/Chatbot'; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
 import { Tema } from './types';
-import { useNavigate } from 'react-router-dom';
-
 
 const App: React.FC = () => {
   const [temas, setTemas] = useState<Tema[]>([
@@ -80,12 +78,11 @@ const App: React.FC = () => {
     }
   ]);
 
-  
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Cambia `false` a `null` para indicar estado de carga
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // Verificar si el usuario está autenticado
+    // Verificar si el usuario está autenticado al cargar la aplicación
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
   }, []);
@@ -113,8 +110,17 @@ const App: React.FC = () => {
         <NavigationButton /> {/* Título fijo del foro */}
         <Routes>
           {/* Ruta para login */}
-          <Route path="/" element={isAuthenticated ? <Navigate to="/foro" replace /> : <Login />} />
-          
+          <Route
+            path="/"
+            element={
+              !isAuthenticated ? (
+                <Login setIsAuthenticated={setIsAuthenticated} />
+              ) : (
+                <Navigate to="/foro" />
+              )
+            }
+          />
+
           {/* Ruta para el foro principal */}
           <Route
             path="/foro"
@@ -136,15 +142,17 @@ const App: React.FC = () => {
                   </Modal>
                 </div>
               ) : (
-                <Navigate to="/" replace />
+                <Navigate to="/" />
               )
             }
           />
-          
+
           {/* Ruta para ver detalles de un tema */}
           <Route
             path="/tema/:temaId"
-            element={isAuthenticated ? <RenderDetalleTema temas={temas} /> : <Navigate to="/" replace />}
+            element={
+              isAuthenticated ? <RenderDetalleTema temas={temas} /> : <Navigate to="/" />
+            }
           />
         </Routes>
         <Chatbot /> {/* Añadir el chatbot aquí para que siempre esté presente */}

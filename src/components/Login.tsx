@@ -2,15 +2,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean | null>>;
+}
+
+const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Autenticación sin validaciones, simplemente establece el estado como autenticado
     localStorage.setItem('isAuthenticated', 'true');
+    setIsAuthenticated(true);
     // Redirigir al foro principal después de "iniciar sesión"
-    navigate('/foro', { replace: true });
+    navigate('/foro'); // Elimina `replace: true` para evitar problemas de caché
   };
 
   return (
