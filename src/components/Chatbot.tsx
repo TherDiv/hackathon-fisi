@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaComments, FaTimes } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown'; // Importamos react-markdown
+import rehypeRaw from 'rehype-raw'; // Importamos rehypeRaw para permitir HTML
 
 interface Message {
   sender: 'bot' | 'user';
@@ -14,7 +16,7 @@ interface NewSessionResponse {
 }
 
 interface AskResponse {
-  message: string;
+  response: string;
 }
 
 const Chatbot: React.FC = () => {
@@ -24,39 +26,70 @@ const Chatbot: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isMinimized, setIsMinimized] = useState<boolean>(true);
 
-  useEffect(() => {
-    const startSession = async () => {
-      try {
-        const response = await axios.post<NewSessionResponse>('http://localhost:5000/new-session');
-        setSessionId(response.data.session_id);
-        setMessages([{ sender: 'bot', text: response.data.message }]);
-      } catch (error) {
-        console.error('Error al iniciar la sesión:', error);
-      }
-    };
+  const startSession = async () => {
+    try {
+      const response = await axios.post<NewSessionResponse>(
+        'https://vercel-backend-flame.vercel.app/api/new-session'
+      );
+      setSessionId(response.data.session_id);
+      setMessages([{ sender: 'bot', text: response.data.message }]);
+    } catch (error) {
+      console.error('Error al iniciar la sesión:', error);
+    }
+  };
 
+  useEffect(() => {
     startSession();
   }, []);
 
   const handleSendMessage = async () => {
     if (!input.trim() || !sessionId) return;
-
+  
+    // Añadimos el mensaje del usuario
     setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: input }]);
     setInput('');
     setLoading(true);
-
+  
     try {
-      const response = await axios.post<AskResponse>('http://localhost:5000/ask', {
-        session_id: sessionId,
-        message: input,
-      });
-
-      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: response.data.message }]);
+      // Realizamos la solicitud al backend
+      const response = await axios.post<AskResponse>(
+        'https://vercel-backend-flame.vercel.app/api/ask',
+        {
+          session_id: sessionId,
+          message: input,
+        }
+      );
+      
+      // Accedemos a la respuesta del bot en la propiedad 'response'
+      const botMessage = response.data.response;  // Aquí verificamos que sea 'response'
+      
+      console.log('Respuesta del bot:', botMessage);  // Verificamos en la consola el contenido de la respuesta
+      
+      // Actualizamos los mensajes para mostrar el mensaje del bot
+      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botMessage }]);
     } catch (error) {
       console.error('Error al enviar el mensaje:', error);
-      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: 'Hubo un error al procesar tu solicitud.' }]);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: 'bot', text: 'Hubo un error al procesar tu solicitud.' },
+      ]);
     } finally {
       setLoading(false);
+    }
+  };
+  
+
+  const endSession = async () => {
+    if (!sessionId) return;
+
+    try {
+      await axios.post('https://vercel-backend-flame.vercel.app/api/end-session', {
+        session_id: sessionId,
+      });
+      setSessionId(null);
+      setMessages([]);
+    } catch (error) {
+      console.error('Error al finalizar la sesión:', error);
     }
   };
 
@@ -67,16 +100,14 @@ const Chatbot: React.FC = () => {
   return (
     <>
       {isMinimized ? (
-        // Botón flotante para abrir el chatbot (círculo más grande)
         <button
           onClick={toggleMinimize}
-          className="fixed bottom-4 right-4 bg-blue-500 text-white p-5 rounded-full shadow-lg z-50" // Aumentamos el padding a p-5
+          className="fixed bottom-4 right-4 bg-blue-500 text-white p-5 rounded-full shadow-lg z-50"
         >
-          <FaComments size={32} /> {/* Tamaño del icono aumentado a 32px */}
+          <FaComments size={32} />
         </button>
       ) : (
-        // Ventana de chat abierta
-        <div className="fixed bottom-0 right-0 m-4 w-[380px] bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+        <div className="fixed bottom-0 right-0 m-4 w-[400px] bg-white border border-gray-300 rounded-lg shadow-lg z-50">
           <div className="p-4 bg-blue-500 text-white font-bold rounded-t-lg flex justify-between items-center">
             <span>Chatbot FISI</span>
             <button onClick={toggleMinimize} className="text-white">
@@ -91,7 +122,12 @@ const Chatbot: React.FC = () => {
                   message.sender === 'bot' ? 'bg-blue-100 text-left' : 'bg-gray-300 text-right'
                 }`}
               >
-                {message.text}
+                {/* Usamos ReactMarkdown para renderizar los mensajes del bot */}
+                {message.sender === 'bot' ? (
+                  <ReactMarkdown rehypePlugins={[rehypeRaw]}>{message.text}</ReactMarkdown>
+                ) : (
+                  <span>{message.text}</span>
+                )}
               </div>
             ))}
           </div>
