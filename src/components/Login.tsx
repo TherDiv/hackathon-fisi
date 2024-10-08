@@ -43,7 +43,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
             placeholder="Contraseña (opcional)"
             className="border p-2 w-full rounded"
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 w-full rounded">
+          <button type="submit" className="bg-red-700 text-white p-2 w-full rounded">
             Acceder
           </button>
         </form>

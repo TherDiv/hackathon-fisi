@@ -63,7 +63,7 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
         <option value="Becas">Becas</option>
         <option value="Aplazados">Aplazados</option>
       </select>
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">
+      <button type="submit" className="bg-red-800 text-white p-2 rounded mt-2">
         Añadir
       </button>
     </form>
