@@ -1,3 +1,4 @@
+// src/components/Login.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +22,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
     <div
       className="w-full h-screen flex items-center justify-center"
       style={{
-        backgroundImage: `url('/images/fondo.jpg')`, // Verificar la ruta y el nombre del archivo
+        backgroundImage: `url('/images/fondo.jpg')`,  // <-- Solo en la pantalla de login
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

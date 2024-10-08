@@ -93,7 +93,6 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    // Verificar si el usuario está autenticado al cargar la página
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
   }, []);
@@ -138,38 +137,41 @@ const App: React.FC = () => {
             )
           }
         />
-        {/* Ruta para el foro principal */}
+
+        {/* Rutas autenticadas (con navbar y chatbot) */}
         <Route
-          path="/foro"
+          path="*"
           element={
             isAuthenticated ? (
               <div className="container mx-auto p-4 pt-24 relative">
-                <NavigationButton />
-                <div className="relative">
-                  <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
-                    <button onClick={openModal} className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg">
-                      Agregar Pregunta
-                    </button>
-                  </div>
-                  <TemaLista temas={temas} />
-                  <Modal isOpen={isModalOpen} onClose={closeModal}>
-                    <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
-                  </Modal>
-                </div>
-                <Chatbot />
+                <NavigationButton /> {/* Mostrar la barra de navegación */}
+                <Routes>
+                  {/* Ruta del foro */}
+                  <Route
+                    path="/foro"
+                    element={
+                      <div className="relative">
+                        <div className="flex justify-between items-center mb-6">
+                          <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
+                          <button onClick={openModal} className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg">
+                            Agregar Pregunta
+                          </button>
+                        </div>
+                        <TemaLista temas={temas} />
+                        <Modal isOpen={isModalOpen} onClose={closeModal}>
+                          <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
+                        </Modal>
+                      </div>
+                    }
+                  />
+                  {/* Ruta de detalle del tema */}
+                  <Route
+                    path="/tema/:temaId"
+                    element={<RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} />}
+                  />
+                </Routes>
+                <Chatbot /> {/* Mostrar el chatbot */}
               </div>
-            ) : (
-              <Navigate to="/" replace />
-            )
-          }
-        />
-        {/* Ruta para ver detalles de un tema */}
-        <Route
-          path="/tema/:temaId"
-          element={
-            isAuthenticated ? (
-              <RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} />
             ) : (
               <Navigate to="/" replace />
             )
