@@ -34,9 +34,9 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       {/* El modal */}
-      <form onSubmit={handleSubmit} className="bg-white p-0.5 border rounded-lg shadow-lg w-[600px] relative">
+      <form onSubmit={handleSubmit} className="bg-white border rounded-md shadow-lg w-[600px] h-[540px] relative">
         {/* Barra roja con el título y la X de cerrar */}
-        <div className="bg-red-800 text-white text-lg font-bold p-4 rounded-t-lg flex justify-between items-center">
+        <div className="bg-blue-800 text-white text-lg font-bold p-3 rounded-t-md flex justify-between items-center">
           Agregar Pregunta
           <button onClick={onClose} className="text-white">
             <FaTimes size={24} />
@@ -86,18 +86,19 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
           <div className="mb-4">
             <label htmlFor="contenido" className="font-bold block mb-1">Contenido:</label>
             <textarea
-              id="contenido"
+              placeholder="Contenido adicional sobre tu pregunta"
               value={contenido}
               onChange={(e) => setContenido(e.target.value)}
-              className="border w-full p-2 rounded"
-              rows={5}
-              placeholder="Contenido adicional sobre tu pregunta"
-            />
+              className="border mb-2 p-2 w-full rounded overflow-y-auto"
+              rows={4}
+              style={{ resize: 'none', height: '100px' }}  // Desactivar resize y establecer una altura fija
+            ></textarea>
+            <div className="absolute bottom-6 right-4">
+              <button type="submit" className="bg-blue-800 text-white p-2 rounded w-auto ">
+                Añadir
+              </button>
+            </div>
           </div>
-
-          <button type="submit" className="bg-red-800 text-white p-2 rounded mt-2 w-auto">
-            Añadir
-          </button>
         </div>
       </form>
     </div>
