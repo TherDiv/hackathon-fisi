@@ -35,15 +35,15 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
         <form onSubmit={handleLogin} className="space-y-4">
           <input
             type="email"
-            placeholder="Correo institucional (opcional)"
+            placeholder="Correo institucional"
             className="border p-2 w-full rounded"
           />
           <input
             type="password"
-            placeholder="Contraseña (opcional)"
+            placeholder="Contraseña"
             className="border p-2 w-full rounded"
           />
-          <button type="submit" className="bg-red-700 text-white p-2 w-full rounded">
+          <button type="submit" className="bg-red-800 text-white p-2 w-full rounded">
             Acceder
           </button>
         </form>

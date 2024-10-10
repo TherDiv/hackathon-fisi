@@ -154,7 +154,7 @@ const App: React.FC = () => {
                         <div className="flex justify-between items-center mb-6">
                           <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
                           <button onClick={openModal} className="bg-red-800 text-white px-4 py-2 rounded shadow-lg">
-                            Agregar Pregunta
+                            Añadir Pregunta
                           </button>
                         </div>
                         <TemaLista temas={temas} />
