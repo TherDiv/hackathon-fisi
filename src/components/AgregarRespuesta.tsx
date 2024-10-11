@@ -33,7 +33,7 @@ const AgregarRespuesta: React.FC<AgregarRespuestaProps> = ({ onAgregarRespuesta 
         onChange={(e) => setContenido(e.target.value)}
         className="border mb-2 p-2 w-full rounded"
       />
-      <button type="submit" className="bg-blue-800 text-white p-2 rounded mt-2">Añadir Respuesta</button>
+      <button type="submit" className="bg-sky-800 text-white p-2 rounded mt-2">Añadir Respuesta</button>
     </form>
   );
 };

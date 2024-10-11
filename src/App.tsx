@@ -143,7 +143,7 @@ const App: React.FC = () => {
           path="*"
           element={
             isAuthenticated ? (
-              <div className="container mx-auto p-4 pt-24 relative">
+              <div className="container mx-auto p-6 pt-24 relative">
                 <NavigationButton /> {/* Mostrar la barra de navegación */}
                 <Routes>
                   {/* Ruta del foro */}
@@ -153,7 +153,7 @@ const App: React.FC = () => {
                       <div className="relative">
                         <div className="flex justify-between items-center mb-6">
                           <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
-                          <button onClick={openModal} className="bg-red-800 text-white px-4 py-2 rounded shadow-lg">
+                          <button onClick={openModal} className="bg-sky-800 text-white px-4 py-2 rounded shadow-lg">
                             Añadir Pregunta
                           </button>
                         </div>
@@ -202,7 +202,7 @@ const RenderDetalleTema: React.FC<RenderDetalleTemaProps> = ({ temas, agregarRes
 
   return (
     <div className="p-4">
-      <button onClick={() => navigate('/foro')} className="bg-red-800 text-white px-4 py-2 rounded mb-4 shadow-lg">
+      <button onClick={() => navigate('/foro')} className="bg-sky-700 text-white px-4 py-2 rounded mb-4 shadow-lg">
         Volver
       </button>
       <div className="p-4 border rounded-lg shadow-md mb-5">

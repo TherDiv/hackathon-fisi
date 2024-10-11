@@ -36,8 +36,16 @@ const Chatbot: React.FC = () => {
   const startSession = async () => {
     try {
       const response = await axios.post<NewSessionResponse>(
-        'https://vercel-backend-flame.vercel.app/api/new-session'
+        'https://vercel-backend-flame.vercel.app/api/new-session',
+        {}, // Si no envías ningún dato en el cuerpo de la solicitud
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
+      
+      // TypeScript ahora sabe que response.data tiene el tipo NewSessionResponse
       setSessionId(response.data.session_id);
       setMessages([{ sender: 'bot', text: response.data.message }]);
     } catch (error) {
@@ -45,6 +53,7 @@ const Chatbot: React.FC = () => {
     }
   };
 
+  
   useEffect(() => {
     // Iniciar la sesión cuando se monta el componente
     startSession();
@@ -64,8 +73,15 @@ const Chatbot: React.FC = () => {
         {
           session_id: sessionId,
           message: input,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       );
+      
+      // TypeScript ahora sabe que response.data tiene el tipo AskResponse
       setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: response.data.response }]);
     } catch (error) {
       console.error('Error al enviar el mensaje:', error);
@@ -77,6 +93,7 @@ const Chatbot: React.FC = () => {
       setLoading(false);
     }
   };
+
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);

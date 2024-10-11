@@ -36,7 +36,7 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
       {/* El modal */}
       <form onSubmit={handleSubmit} className="bg-white border rounded-md shadow-lg w-[600px] h-[540px] relative">
         {/* Barra roja con el título y la X de cerrar */}
-        <div className="bg-blue-800 text-white text-lg font-bold p-3 rounded-t-md flex justify-between items-center">
+        <div className="bg-sky-800 text-white text-lg font-bold p-3 rounded-t-md flex justify-between items-center">
           Agregar Pregunta
           <button onClick={onClose} className="text-white">
             <FaTimes size={24} />
@@ -94,7 +94,7 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
               style={{ resize: 'none', height: '100px' }}  // Desactivar resize y establecer una altura fija
             ></textarea>
             <div className="absolute bottom-6 right-4">
-              <button type="submit" className="bg-blue-800 text-white p-2 rounded w-auto ">
+              <button type="submit" className="bg-sky-800 text-white p-2 rounded w-auto ">
                 Añadir
               </button>
             </div>
