@@ -105,11 +105,12 @@ const App: React.FC = () => {
     setTemas(prevTemas =>
       prevTemas.map(tema =>
         tema.id === temaId
-          ? { ...tema, respuestas: [...tema.respuestas, respuesta] }
+          ? { ...tema, respuestas: [...tema.respuestas, { id: Date.now(), ...respuesta }] } // Generar un ID único para la respuesta
           : tema
       )
     );
   };
+  
 
   const openModal = () => {
     setIsModalOpen(true);
