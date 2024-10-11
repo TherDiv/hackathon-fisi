@@ -8,6 +8,13 @@ interface Message {
   text: string;
 }
 
+interface Session {
+  session_id: string;
+  messages: Message[];
+  date: string;
+  title: string; // Añadido el título generado por la IA
+}
+
 interface NewSessionResponse {
   session_id: string;
   message: string;
@@ -24,20 +31,19 @@ const Chatbot: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isMinimized, setIsMinimized] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'new' | 'history'>('new'); // Maneja las pestañas activas
+  const [chatHistory, setChatHistory] = useState<Session[]>([]); // Historial de chats
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null); // Almacena la sesión seleccionada
 
-  // Simulación del historial de chats (puedes obtener esto del backend)
-  const [chatHistory] = useState([
-    { title: 'TEMA 1', question: 'Pregunta 1', date: '10/10/2024', time: '10:00' },
-    { title: 'TEMA 2', question: 'Pregunta 2', date: '11/10/2024', time: '11:00' },
-    { title: 'TEMA 3', question: 'Pregunta 3', date: '12/10/2024', time: '12:00' },
-  ]);
+  const usuario_id = '123'; // ID estático de usuario para ejemplo
 
   // Función para iniciar una nueva sesión
   const startSession = async () => {
     try {
       const response = await axios.post<NewSessionResponse>(
-        'https://vercel-backend-flame.vercel.app/api/new-session',
-        {}, // Si no envías ningún dato en el cuerpo de la solicitud
+        'https://vercel-backend-flame.vercel.app/api/chatbot/new-session',
+        {
+          usuario_id,
+        },
         {
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +51,6 @@ const Chatbot: React.FC = () => {
         }
       );
       
-      // TypeScript ahora sabe que response.data tiene el tipo NewSessionResponse
       setSessionId(response.data.session_id);
       setMessages([{ sender: 'bot', text: response.data.message }]);
     } catch (error) {
@@ -53,9 +58,7 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  
   useEffect(() => {
-    // Iniciar la sesión cuando se monta el componente
     startSession();
   }, []);
 
@@ -69,10 +72,11 @@ const Chatbot: React.FC = () => {
 
     try {
       const response = await axios.post<AskResponse>(
-        'https://vercel-backend-flame.vercel.app/api/ask',
+        'https://vercel-backend-flame.vercel.app/api/chatbot/ask',
         {
           session_id: sessionId,
           message: input,
+          usuario_id,
         },
         {
           headers: {
@@ -81,7 +85,6 @@ const Chatbot: React.FC = () => {
         }
       );
       
-      // TypeScript ahora sabe que response.data tiene el tipo AskResponse
       setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: response.data.response }]);
     } catch (error) {
       console.error('Error al enviar el mensaje:', error);
@@ -94,15 +97,50 @@ const Chatbot: React.FC = () => {
     }
   };
 
+  // Función para manejar cuando el usuario presiona Enter
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Evita el salto de línea en el campo de texto
+      handleSendMessage(); // Llama a la función para enviar el mensaje
+    }
+  };
+
+  // Función para terminar la sesión y guardar el historial
+  const endSession = async () => {
+    try {
+      const title = `Consulta sobre ${messages[0]?.text || 'tema'}`; // Asignar un título a la sesión
+      const currentSession: Session = {
+        session_id: sessionId!,
+        messages: messages,
+        date: new Date().toLocaleString(),
+        title,
+      };
+      
+      await axios.post('https://vercel-backend-flame.vercel.app/api/chatbot/delete-my-session', {
+        usuario_id,
+        session_id: sessionId,
+      });
+
+      setChatHistory((prevHistory) => [...prevHistory, currentSession]);
+      setSessionId(null);
+      setMessages([]);
+    } catch (error) {
+      console.error('Error al terminar la sesión:', error);
+    }
+  };
 
   const toggleMinimize = () => {
     setIsMinimized(!isMinimized);
   };
 
+  // Función para seleccionar una sesión del historial
+  const handleSelectSession = (session: Session) => {
+    setSelectedSession(session);
+  };
+
   return (
     <>
       {isMinimized ? (
-        // Botón flotante para abrir el chatbot
         <button
           onClick={toggleMinimize}
           className="fixed bottom-4 right-4 bg-red-800 text-white p-5 rounded-full shadow-lg z-50"
@@ -110,8 +148,7 @@ const Chatbot: React.FC = () => {
           <FaComments size={32} />
         </button>
       ) : (
-        // Ventana de chat abierta con pestañas
-        <div className="fixed bottom-0 right-0 m-4 w-[400px] bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+        <div className="fixed bottom-0 right-0 m-4 w-[400px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
           <div className="p-4 bg-red-900 text-white font-bold rounded-t-lg flex justify-between items-center">
             <span>¡Pregunta Fisiano!</span>
             <button onClick={toggleMinimize} className="text-white">
@@ -119,11 +156,13 @@ const Chatbot: React.FC = () => {
             </button>
           </div>
 
-          {/* Pestañas para cambiar entre nueva conversación e historial */}
           <div className="flex justify-between border-b">
             <button
               className={`p-2 w-1/2 text-center ${activeTab === 'new' ? 'border-b-2 border-red-600 font-bold' : ''}`}
-              onClick={() => setActiveTab('new')}
+              onClick={() => {
+                setActiveTab('new');
+                setSelectedSession(null); // Resetea la selección cuando cambias a "Nueva Conversación"
+              }}
             >
               Nueva Conversación
             </button>
@@ -135,9 +174,8 @@ const Chatbot: React.FC = () => {
             </button>
           </div>
 
-          {/* Contenido de las pestañas */}
           {activeTab === 'new' ? (
-            <div className="p-4 h-[350px] overflow-y-auto">
+            <div className="flex-grow p-4 h-64 min-h-[200px] overflow-y-auto">
               {messages.map((message, index) => (
                 <div
                   key={index}
@@ -146,33 +184,53 @@ const Chatbot: React.FC = () => {
                   {message.text}
                 </div>
               ))}
-              <div className="p-4 border-t border-gray-300 flex items-center">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="flex-grow p-2 border border-gray-300 rounded mr-2"
-                  placeholder="Escribe tu pregunta..."
-                  disabled={!sessionId || loading}
-                />
-                <button
-                  onClick={handleSendMessage}
-                  className="bg-red-800 text-white p-2 rounded"
-                  disabled={!sessionId || loading}
-                >
-                  {loading ? '...' : 'Enviar'}
-                </button>
-              </div>
             </div>
-          ) : (
-            <div className="p-4 h-[350px] overflow-y-auto">
-              {chatHistory.map((chat, index) => (
-                <div key={index} className="border p-2 mb-2 rounded">
-                  <p className="font-bold">{chat.title}</p>
-                  <p>{chat.question}</p>
-                  <p className="text-xs text-gray-500">{chat.date} - {chat.time}</p>
+          ) : selectedSession ? (
+            // Mostrar la conversación completa de la sesión seleccionada
+            <div className="flex-grow p-4 h-64 min-h-[200px] overflow-y-auto">
+              <h3 className="font-bold">{selectedSession.title}</h3>
+              <p className="text-xs text-gray-500">Fecha: {selectedSession.date}</p>
+              {selectedSession.messages.map((message, index) => (
+                <div key={index} className={`mb-2 p-2 rounded ${message.sender === 'bot' ? 'bg-red-100 text-left' : 'bg-gray-300 text-right'}`}>
+                  {message.text}
                 </div>
               ))}
+            </div>
+          ) : (
+            // Mostrar solo los títulos de las conversaciones en el historial
+            <div className="flex-grow p-4 h-64 min-h-[200px] overflow-y-auto">
+              {chatHistory.map((chat, index) => (
+                <div key={index} className="border p-2 mb-2 rounded cursor-pointer" onClick={() => handleSelectSession(chat)}>
+                  <p className="font-bold">{chat.title}</p>
+                  <p className="text-xs text-gray-500">Fecha: {chat.date}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'new' && sessionId && (
+            <div className="p-4 border-t border-gray-300 flex items-center">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                className="flex-grow p-2 border border-gray-300 rounded mr-2"
+                placeholder="Escribe tu pregunta..."
+                disabled={!sessionId || loading}
+              />
+              <button
+                onClick={handleSendMessage}
+                className="bg-red-800 text-white p-2 rounded"
+                disabled={!sessionId || loading}
+              >
+                {loading ? '...' : 'Enviar'}
+              </button>
+              {sessionId && (
+                <button onClick={endSession} className="bg-red-600 text-white ml-4 p-2 rounded">
+                  Terminar Sesión
+                </button>
+              )}
             </div>
           )}
         </div>
