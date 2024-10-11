@@ -11,6 +11,7 @@ export interface Tema {
   }
   
   export interface Respuesta {
+    id: number;
     autor: string;
     contenido: string;
   }
