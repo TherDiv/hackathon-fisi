@@ -1,71 +1,107 @@
-// src/components/AgregarPregunta.tsx
 import React, { useState } from 'react';
 import { Tema } from '../types';
+import { FaTimes } from 'react-icons/fa';
 
 interface AgregarPreguntaProps {
   agregarTema: (nuevoTema: Tema) => void;
-  onClose: () => void; // Propiedad para manejar el cierre del modal
+  onClose: () => void;
 }
 
 const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose }) => {
-  const [nombre, setNombre] = useState('Usuario'); // Valor predeterminado 'Usuario'
+  const [nombre, setNombre] = useState('Anónimo');
   const [pregunta, setPregunta] = useState('');
   const [contenido, setContenido] = useState('');
+  const [topico, setTopico] = useState('');
 
-  // Manejar el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pregunta) {
-      alert('Por favor, escribe un título para la pregunta');
-      return;
-    }
+    if (!pregunta.trim() || !topico) return;
 
     const newTema: Tema = {
-      id: Date.now(), // Generar un ID único basado en el timestamp actual
+      id: Date.now(),
       titulo: pregunta,
       autor: nombre,
-      fecha: new Date().toLocaleDateString(), // Fecha actual
+      fecha: new Date().toLocaleDateString(),
       contenido: contenido,
-      respuestas: []
+      respuestas: [],
+      topico: topico,
     };
 
-    agregarTema(newTema); // Llamar a la función para agregar la nueva pregunta al foro
-    onClose(); // Cerrar el modal después de agregar la pregunta
+    agregarTema(newTema);
+    onClose(); // Cerrar el modal o formulario
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded-lg shadow-md bg-white">
-      <h2 className="font-bold text-xl mb-4">Añadir Pregunta</h2>
-      <input
-        type="text"
-        placeholder="Nombre (opcional)"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        className="border mb-4 p-2 w-full rounded"
-      />
-      <input
-        type="text"
-        placeholder="Título de la pregunta"
-        value={pregunta}
-        onChange={(e) => setPregunta(e.target.value)}
-        className="border mb-4 p-2 w-full rounded"
-        required
-      />
-      <textarea
-        placeholder="Contenido adicional (opcional)"
-        value={contenido}
-        onChange={(e) => setContenido(e.target.value)}
-        className="border mb-4 p-2 w-full rounded"
-      />
-      <div className="flex justify-end">
-        <button type="button" onClick={onClose} className="bg-gray-500 text-white p-2 rounded mr-2">
-          Cancelar
-        </button>
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-          Añadir
-        </button>
-      </div>
-    </form>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      {/* El modal */}
+      <form onSubmit={handleSubmit} className="bg-white border rounded-md shadow-lg w-[600px] h-[540px] relative">
+        {/* Barra roja con el título y la X de cerrar */}
+        <div className="bg-sky-800 text-white text-lg font-bold p-3 rounded-t-md flex justify-between items-center">
+          Agregar Pregunta
+          <button onClick={onClose} className="text-white">
+            <FaTimes size={24} />
+          </button>
+        </div>
+
+        {/* Campos del formulario */}
+        <div className="p-4">
+          <div className="mb-4">
+            <label htmlFor="nombre" className="font-bold block mb-1">Nombre:</label>
+            <input
+              type="text"
+              id="nombre"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="border w-full p-2 rounded"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="topico" className="font-bold block mb-1">Tema:</label>
+            <select
+              id="topico"
+              value={topico}
+              onChange={(e) => setTopico(e.target.value)}
+              className="border w-full p-2 rounded"
+            >
+              <option value="">Selecciona un tema</option>
+              <option value="Matrícula Extemporánea">Matrícula Extemporánea</option>
+              <option value="Becas">Becas</option>
+              <option value="Aplazados">Aplazados</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="pregunta" className="font-bold block mb-1">Pregunta:</label>
+            <input
+              type="text"
+              id="pregunta"
+              value={pregunta}
+              onChange={(e) => setPregunta(e.target.value)}
+              className="border w-full p-2 rounded"
+              placeholder="Escribe tu pregunta"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="contenido" className="font-bold block mb-1">Contenido:</label>
+            <textarea
+              placeholder="Contenido adicional sobre tu pregunta"
+              value={contenido}
+              onChange={(e) => setContenido(e.target.value)}
+              className="border mb-2 p-2 w-full rounded overflow-y-auto"
+              rows={4}
+              style={{ resize: 'none', height: '100px' }}  // Desactivar resize y establecer una altura fija
+            ></textarea>
+            <div className="absolute bottom-6 right-4">
+              <button type="submit" className="bg-sky-800 text-white p-2 rounded w-auto ">
+                Añadir
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 };
 

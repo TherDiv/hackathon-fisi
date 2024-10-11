@@ -1,5 +1,4 @@
 // src/types.ts
-// src/types.ts
 
 export interface Tema {
     id: number;
@@ -8,6 +7,7 @@ export interface Tema {
     fecha: string;
     contenido: string;
     respuestas: Respuesta[];
+    topico: string; // Nuevo campo para almacenar el tópico
   }
   
   export interface Respuesta {

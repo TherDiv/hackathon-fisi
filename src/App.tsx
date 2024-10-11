@@ -1,14 +1,16 @@
 // src/App.tsx
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useParams, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'; // Añadir `useEffect` aquí
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; // Importar `useParams` por separado
 import TemaLista from './components/TemaLista';
 import AgregarPregunta from './components/AgregarPregunta';
-import NavigationButton from './components/NavigationButton';
-import Modal from './components/Modal';
+import AgregarRespuesta from './components/AgregarRespuesta'; 
+import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
+import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
-import Chatbot from './components/Chatbot';
-import AgregarRespuesta from './components/AgregarRespuesta';
+import Chatbot from './components/Chatbot'; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
 import { Tema } from './types';
+import { useNavigate } from 'react-router-dom';
 
 const App: React.FC = () => {
   const [temas, setTemas] = useState<Tema[]>([
@@ -18,7 +20,8 @@ const App: React.FC = () => {
       autor: 'Juan',
       fecha: '01/10/2024',
       contenido: 'Hola, alguien sabe cuándo empiezan las fechas de matrícula para el próximo ciclo? Escuché que cambiaron los plazos, pero no estoy seguro. Agradecería cualquier información, especialmente sobre las fechas y qué documentos necesito tener listos.',
-      respuestas: []
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad `topico`
     },
     {
       id: 2,
@@ -26,7 +29,8 @@ const App: React.FC = () => {
       autor: 'Vanessa',
       fecha: '02/10/2024',
       contenido: 'Hola a todos! Estoy interesada en aplicar a una beca internacional, pero no tengo muy claro por dónde empezar. ¿Alguien ya ha pasado por este proceso y me podría decir qué documentos piden y si hay algún requisito especial? Cualquier ayuda sería genial :)',
-      respuestas: []
+      respuestas: [],
+      topico: 'Becas' // Añadir la propiedad `topico`
     },
     {
       id: 3,
@@ -34,15 +38,18 @@ const App: React.FC = () => {
       autor: 'Carlos',
       fecha: '03/10/2024',
       contenido: 'Chicos, tengo que dar los exámenes de aplazados y la verdad estoy un poco perdido. ¿Alguien sabe cómo va eso? ¿Hay que inscribirse en algún sitio o simplemente aparecen las fechas en el sistema? Si alguno ha pasado por esto antes, agradecería sus consejos.',
-      respuestas: []
+      respuestas: [],
+      topico: 'Aplazados' // Añadir la propiedad `topico`
     },
+    // Repite lo mismo para los demás objetos `Tema`...
     {
       id: 4,
       titulo: '¿Cómo puedo pedir una prórroga para la matrícula?',
       autor: 'Ana',
       fecha: '04/10/2024',
       contenido: 'El otro día me comentaron que se puede pedir una prórroga para la matrícula si uno tiene problemas para pagar a tiempo. ¿Alguien sabe cómo hacer esto? ¿Es complicado o te ponen muchas trabas? Cualquier experiencia que puedan compartir me sería muy útil!',
-      respuestas: []
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad `topico`
     },
     {
       id: 5,
@@ -50,7 +57,8 @@ const App: React.FC = () => {
       autor: 'María',
       fecha: '05/10/2024',
       contenido: 'Hola, estoy tratando de organizarme para la matrícula, pero no estoy segura de qué documentos necesito tener listos. ¿Alguien tiene la lista completa o sabe si este año piden algo diferente? Prefiero estar preparada antes de que empiecen las fechas.',
-      respuestas: []
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad `topico`
     },
     {
       id: 6,
@@ -58,7 +66,8 @@ const App: React.FC = () => {
       autor: 'Luis',
       fecha: '06/10/2024',
       contenido: 'Alguien me puede ayudar con esto: ¿cómo es el proceso para recuperar un curso aplazado? Me dijeron que se puede volver a llevar el próximo ciclo, pero no sé si hay algún costo adicional o si tengo que hacer algún trámite especial antes. Cualquier dato me ayuda.',
-      respuestas: []
+      respuestas: [],
+      topico: 'Aplazados' // Añadir la propiedad `topico`
     },
     {
       id: 7,
@@ -66,7 +75,8 @@ const App: React.FC = () => {
       autor: 'Sofía',
       fecha: '07/10/2024',
       contenido: 'Hola chicos, ¿saben si es posible cambiar los cursos después de hacer la matrícula? Me preocupa que me haya inscrito en demasiados créditos y no sé si aún puedo ajustar la carga antes de que empiece el ciclo. ¿Alguien ha hecho esto antes?',
-      respuestas: []
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad `topico`
     },
     {
       id: 8,
@@ -74,10 +84,11 @@ const App: React.FC = () => {
       autor: 'Diego',
       fecha: '08/10/2024',
       contenido: 'Hola, estoy teniendo algunos problemas para pagar la matrícula a tiempo y quería saber si alguien sabe qué opciones tengo. ¿Se puede pedir algún tipo de financiamiento o hay becas para estas situaciones? Si alguien ya pasó por algo parecido, agradecería cualquier consejo.',
-      respuestas: []
+      respuestas: [],
+      topico: 'Becas' // Añadir la propiedad `topico`
     }
   ]);
-  
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -114,38 +125,59 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="container mx-auto p-4 pt-24 relative">
-        <NavigationButton />
-        <Routes>
-          <Route path="/" element={isAuthenticated ? <Navigate to="/foro" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />} />
-          <Route
-            path="/foro"
-            element={
-              isAuthenticated ? (
-                <div className="relative">
-                  <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
-                    <button onClick={openModal} className="bg-blue-500 text-white px-4 py-2 rounded shadow-lg">
-                      Agregar Pregunta
-                    </button>
-                  </div>
-                  <TemaLista temas={temas} />
-                  <Modal isOpen={isModalOpen} onClose={closeModal}>
-                    <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
-                  </Modal>
-                </div>
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-          <Route
-            path="/tema/:temaId"
-            element={isAuthenticated ? <RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} /> : <Navigate to="/" replace />}
-          />
-        </Routes>
-        <Chatbot />
-      </div>
+      <Routes>
+        {/* Ruta para el login */}
+        <Route
+          path="/"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/foro" replace />
+            ) : (
+              <Login setIsAuthenticated={setIsAuthenticated} />
+            )
+          }
+        />
+
+        {/* Rutas autenticadas (con navbar y chatbot) */}
+        <Route
+          path="*"
+          element={
+            isAuthenticated ? (
+              <div className="container mx-auto p-6 pt-24 relative">
+                <NavigationButton /> {/* Mostrar la barra de navegación */}
+                <Routes>
+                  {/* Ruta del foro */}
+                  <Route
+                    path="/foro"
+                    element={
+                      <div className="relative">
+                        <div className="flex justify-between items-center mb-6">
+                          <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
+                          <button onClick={openModal} className="bg-sky-800 text-white px-4 py-2 rounded shadow-lg">
+                            Añadir Pregunta
+                          </button>
+                        </div>
+                        <TemaLista temas={temas} />
+                        <Modal isOpen={isModalOpen} onClose={closeModal}>
+                          <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
+                        </Modal>
+                      </div>
+                    }
+                  />
+                  {/* Ruta de detalle del tema */}
+                  <Route
+                    path="/tema/:temaId"
+                    element={<RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} />}
+                  />
+                </Routes>
+                <Chatbot /> {/* Mostrar el chatbot */}
+              </div>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+      </Routes>
     </Router>
   );
 };
@@ -170,7 +202,7 @@ const RenderDetalleTema: React.FC<RenderDetalleTemaProps> = ({ temas, agregarRes
 
   return (
     <div className="p-4">
-      <button onClick={() => navigate('/foro')} className="bg-blue-500 text-white px-4 py-2 rounded mb-4 shadow-lg">
+      <button onClick={() => navigate('/foro')} className="bg-sky-700 text-white px-4 py-2 rounded mb-4 shadow-lg">
         Volver
       </button>
       <div className="p-4 border rounded-lg shadow-md mb-5">

@@ -18,7 +18,7 @@ const AgregarRespuesta: React.FC<AgregarRespuestaProps> = ({ onAgregarRespuesta 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 p-4 border rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="mt-4 p-4 borde rounded-md shadow-md">
       <h3 className="font-bold text-lg mb-2">Añadir Respuesta</h3>
       <input
         type="text"
@@ -33,7 +33,7 @@ const AgregarRespuesta: React.FC<AgregarRespuestaProps> = ({ onAgregarRespuesta 
         onChange={(e) => setContenido(e.target.value)}
         className="border mb-2 p-2 w-full rounded"
       />
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">Añadir Respuesta</button>
+      <button type="submit" className="bg-sky-800 text-white p-2 rounded mt-2">Añadir Respuesta</button>
     </form>
   );
 };
