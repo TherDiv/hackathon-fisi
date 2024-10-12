@@ -1,143 +1,133 @@
-// src/components/ChatbotInvitado.tsx
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { FaComments, FaWindowMinimize } from 'react-icons/fa';
+// src/components/PaginaFisi.tsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import ChatbotInvitado from './ChatbotInvitado'; // Importa el chatbot de invitados
 
-interface Message {
-  sender: 'bot' | 'user'; // 'bot' o 'user' para el tipo de mensaje
-  text: string;
-}
+export default function PaginaFisi() {
+  const navigate = useNavigate(); // Reemplaza useRouter con useNavigate de react-router-dom
 
-interface NewSessionResponse {
-  session_id: string; // Almacena el session_id devuelto por el backend
-  message: string; // Mensaje de bienvenida desde el backend
-}
-
-interface AskResponse {
-  response: string;
-}
-
-const ChatbotInvitado: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [sessionId, setSessionId] = useState<string | null>(null); // Almacena la session_id
-  const [isMinimized, setIsMinimized] = useState(true);
-  const [loading, setLoading] = useState(false);
-
-  // Función para crear una nueva sesión en el backend
-  const startNewSession = async () => {
-    try {
-      const response = await axios.post<NewSessionResponse>(
-        'https://vercel-backend-flame.vercel.app/api/chatbot/new-session',
-        {}
-      );
-      setSessionId(response.data.session_id); // Guarda el session_id
-      setMessages([{ sender: 'bot', text: response.data.message }]); // Mensaje de bienvenida
-    } catch (error) {
-      console.error('Error al iniciar la sesión:', error);
-      setMessages([{ sender: 'bot', text: 'Error al iniciar la sesión.' }]);
-    }
+  // Función para manejar el clic en "Facultad" y redirigir a /login
+  const handleFacultadClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/login'); // Redirige a la página de login
   };
 
-  useEffect(() => {
-    // Crear una nueva sesión cuando se monta el componente
-    startNewSession();
-  }, []);
-
-  // Función para enviar un mensaje al bot
-  const handleSendMessage = async () => {
-    if (!input.trim() || !sessionId) return; // Asegúrate de que sessionId no sea nulo
-
-    const userMessage: Message = { sender: 'user', text: input };
-    setMessages((prev) => [...prev, userMessage]);
-
-    setInput('');
-    setLoading(true);
-
-    try {
-      const response = await axios.post<AskResponse>(
-        'https://vercel-backend-flame.vercel.app/api/chatbot/ask',
-        { session_id: sessionId, message: input }
-      );
-
-      const botMessage: Message = { sender: 'bot', text: response.data.response };
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      const errorMessage: Message = { sender: 'bot', text: 'Error en la respuesta del chatbot.' };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Manejar la tecla Enter para enviar el mensaje
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  // Alternar minimización del chatbot
-  const toggleMinimize = () => {
-    setIsMinimized(!isMinimized);
+  // Función para manejar el clic en "Foro Estudiantil" y redirigir a /login
+  const handleForoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/login'); // Redirige a la página de login
   };
 
   return (
-    <>
-      {isMinimized ? (
-        <button
-          onClick={toggleMinimize}
-          className="fixed bottom-4 right-4 bg-red-800 text-white p-5 rounded-full shadow-lg z-50"
-        >
-          <FaComments size={32} />
-        </button>
-      ) : (
-        <div className="fixed bottom-0 right-0 m-4 w-[400px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
-          <div className="p-4 bg-red-900 text-white font-bold rounded-t-lg flex justify-between items-center">
-            <span>Chat Invitado</span>
-            <button onClick={toggleMinimize} className="text-white">
-              <FaWindowMinimize size={16} />
-            </button>
-          </div>
+    <div className="bg-gray-100 min-h-screen">
+      {/* Header */}
+      <header className="bg-[#6b1d1d] text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <img src="/logo.png" alt="Faculty Logo" width={50} height={50} className="mr-4" /> {/* Reemplaza Image por img */}
+          <nav>
+            <ul className="flex space-x-4">
+              {['Facultad', 'Pregrado', 'Posgrado', 'Investigación', 'Docentes', 'Estudiantes', 'Egresados', 'CERSEU'].map((item) => (
+                <li key={item}>
+                  {/* Reemplaza Link de next.js con <a> y manejador de eventos */}
+                  <a href="#" onClick={item === 'Facultad' ? handleFacultadClick : undefined} className="hover:underline">
+                    {item}
+                  </a>
+                </li>
+              ))}
+              {/* Nuevo apartado Foro Estudiantil */}
+              <li>
+                <a href="#" onClick={handleForoClick} className="hover:underline font-bold">
+                  Foro Estudiantil
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
 
-          {/* Mostrar mensajes */}
-          <div className="flex-grow p-4 overflow-y-auto">
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`mb-2 p-2 rounded ${
-                  message.sender === 'bot' ? 'bg-red-100 text-left' : 'bg-gray-300 text-right'
-                }`}
-              >
-                {message.text}
+      {/* Main Content */}
+      <main className="container mx-auto mt-8">
+        {/* Banner */}
+        <div className="bg-[#6b1d1d] text-white p-8 flex justify-between items-center mb-8 rounded-lg shadow-lg">
+          <div>
+            <h1 className="text-3xl font-bold mb-4">
+              Inicio del Programa de Titulación por Trabajo de Suficiencia Profesional 2024
+            </h1>
+            <p className="text-lg">Estimado(a) Bachiller</p>
+          </div>
+          <img src="/banner.png" alt="Program Banner" width={300} height={200} /> {/* Reemplaza Image por img */}
+        </div>
+
+        {/* Announcements */}
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Anuncios Importantes</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                title: 'Comunicado: Vigencia del Bachillerato Automático',
+                content:
+                  'Se informa a los alumnos de la Facultad de Ingeniería de Sistemas e Informática, que el 30 de diciembre de 2023...',
+              },
+              {
+                title: 'Comunicado sobre Declaración Jurada de Intereses',
+                content:
+                  'FUNCIONARIOS Y SERVIDORES PÚBLICOS DE LA UNMSM QUE DECLARAN CINCO O MENOS PARIENTES EN SU DECLARACIÓN JURADA...',
+              },
+              {
+                title: 'Documento: Código de Ética y Política de Conflicto',
+                content:
+                  'Se informa a la comunidad académica de la UNMSM sobre la política de conflicto de intereses y código de ética...',
+              },
+              {
+                title: 'Requisitos para tramitar el Grado Académico',
+                content:
+                  'Se informa sobre los requisitos para tramitar el Grado Académico de Bachiller y el Título Profesional...',
+              },
+            ].map((announcement, index) => (
+              <div key={index} className="bg-white p-4 shadow-md rounded-lg">
+                <h3 className="font-bold mb-2 text-[#6b1d1d]">IMPORTANTE</h3>
+                <h4 className="font-semibold mb-1">{announcement.title}</h4>
+                <p className="text-sm text-gray-700">{announcement.content}</p>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* Input para enviar mensajes */}
-          <div className="p-4 border-t border-gray-300 flex items-center">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              className="flex-grow p-2 border border-gray-300 rounded mr-2"
-              placeholder="Escribe tu pregunta..."
-              disabled={loading || !sessionId} // Deshabilitar si no hay session_id
-            />
-            <button
-              onClick={handleSendMessage}
-              className="bg-red-800 text-white p-2 rounded"
-              disabled={loading || !sessionId} // Deshabilitar si no hay session_id o está cargando
-            >
-              {loading ? '...' : 'Enviar'}
-            </button>
+        {/* Services */}
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Nuestros Servicios</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { title: 'Biblioteca', description: 'La biblioteca de la Facultad ofrece recursos para facilitar y proveer...' },
+              { title: 'Bienestar', description: 'La Unidad de Bienestar promueve la calidad de vida mediante servicios y programas...' },
+              { title: 'CENPRO', description: 'El Centro de Producción desarrolla actividades de producción de bienes y servicios...' },
+              { title: 'Estadística e Informática', description: 'Asesoramiento informático a las diversas unidades que conforman la Facultad...' },
+              { title: 'UNAYOE', description: 'La Unidad de Asesoría y Orientación ofrece apoyo académico a los estudiantes...' },
+              { title: 'OCAA', description: 'La Oficina de Calidad Académica y Acreditación garantiza la calidad en la Facultad...' },
+            ].map((service, index) => (
+              <div key={index} className="bg-white p-4 shadow-md rounded-lg">
+                <img src="/service-placeholder.png" alt={service.title} width={200} height={150} className="mb-4 rounded" /> {/* Reemplaza Image por img */}
+                <h3 className="font-semibold mb-2">{service.title}</h3>
+                <p className="text-sm text-gray-700">{service.description}</p>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
-    </>
-  );
-};
+        </section>
+      </main>
 
-export default ChatbotInvitado;
+      {/* Footer */}
+      <footer className="bg-[#6b1d1d] text-white mt-8 p-4">
+        <div className="container mx-auto flex justify-center space-x-6">
+          {['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram'].map((social, index) => (
+            <a key={index} href="#" className="hover:underline">
+              {social}
+            </a>
+          ))}
+        </div>
+      </footer>
+
+      {/* Chatbot de Invitados */}
+      <ChatbotInvitado /> {/* Añade el chatbot de invitados */}
+    </div>
+  );
+}

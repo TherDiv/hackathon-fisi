@@ -127,62 +127,68 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Ruta para la página principal (PaginaFisi) */}
-        <Route path="/" element={<PaginaFisi />} /> {/* Ruta principal */}
-        
+        {/* Ruta para la página principal */}
+        <Route path="/" element={<PaginaFisi />} />
+
         {/* Ruta para el login */}
         <Route
-          path="/"
+          path="/login"
+          element={
+            isAuthenticated ? <Navigate to="/foro" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />
+          }
+        />
+
+        {/* Ruta para el foro estudiantil */}
+        <Route
+          path="/foro"
           element={
             isAuthenticated ? (
-              <Navigate to="/foro" replace />
+              <AuthenticatedLayout>
+                <div className="relative">
+                  <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
+                    <button onClick={openModal} className="bg-sky-800 text-white px-4 py-2 rounded shadow-lg">
+                      Añadir Pregunta
+                    </button>
+                  </div>
+                  <TemaLista temas={temas} />
+                  <Modal isOpen={isModalOpen} onClose={closeModal}>
+                    <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
+                  </Modal>
+                </div>
+              </AuthenticatedLayout>
             ) : (
-              <Login setIsAuthenticated={setIsAuthenticated} />
+              <Navigate to="/login" replace />
             )
           }
         />
 
-        {/* Rutas autenticadas (con navbar y chatbot) */}
+        {/* Ruta para ver el detalle de un tema */}
         <Route
-          path="*"
+          path="/tema/:temaId"
           element={
             isAuthenticated ? (
-              <div className="container mx-auto p-6 pt-24 relative">
-                <NavigationButton /> {/* Mostrar la barra de navegación */}
-                <Routes>
-                  {/* Ruta del foro */}
-                  <Route
-                    path="/foro"
-                    element={
-                      <div className="relative">
-                        <div className="flex justify-between items-center mb-6">
-                          <h1 className="text-3xl font-bold">Preguntas del Foro</h1>
-                          <button onClick={openModal} className="bg-sky-800 text-white px-4 py-2 rounded shadow-lg">
-                            Añadir Pregunta
-                          </button>
-                        </div>
-                        <TemaLista temas={temas} />
-                        <Modal isOpen={isModalOpen} onClose={closeModal}>
-                          <AgregarPregunta agregarTema={agregarTema} onClose={closeModal} />
-                        </Modal>
-                      </div>
-                    }
-                  />
-                  {/* Ruta de detalle del tema */}
-                  <Route
-                    path="/tema/:temaId"
-                    element={<RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} />}
-                  />
-                </Routes>
-                <Chatbot /> {/* Mostrar el chatbot */}
-              </div>
+              <AuthenticatedLayout>
+                <RenderDetalleTema temas={temas} agregarRespuesta={agregarRespuesta} />
+              </AuthenticatedLayout>
             ) : (
-              <Navigate to="/" replace />
+              <Navigate to="/login" replace />
             )
           }
         />
       </Routes>
     </Router>
+  );
+};
+
+// Layout para páginas autenticadas: agrega el `Chatbot` y `NavigationButton`
+const AuthenticatedLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <div className="container mx-auto p-6 pt-24 relative">
+      <NavigationButton /> {/* Botón fijo de navegación */}
+      {children}
+      <Chatbot /> {/* Chatbot con historial */}
+    </div>
   );
 };
 
@@ -211,7 +217,9 @@ const RenderDetalleTema: React.FC<RenderDetalleTemaProps> = ({ temas, agregarRes
       </button>
       <div className="p-4 border rounded-lg shadow-md mb-5">
         <h2 className="text-3xl font-bold">{tema.titulo}</h2>
-        <p className="text-gray-600">Autor: {tema.autor} | Fecha: {tema.fecha}</p>
+        <p className="text-gray-600">
+          Autor: {tema.autor} | Fecha: {tema.fecha}
+        </p>
         <p className="mt-2">{tema.contenido}</p>
 
         <h3 className="font-bold text-lg mt-4">Respuestas:</h3>
