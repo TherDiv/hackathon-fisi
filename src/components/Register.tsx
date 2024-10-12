@@ -1,0 +1,143 @@
+// src/components/Register.tsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+interface RegisterResponse {
+  estado: string; // Ajusta esto según la estructura real de la respuesta del servidor
+}
+
+const Register: React.FC = () => {
+  const navigate = useNavigate();
+  const [codigo, setCodigo] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [dni, setDni] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Petición POST al backend para crear un nuevo usuario
+      const response = await axios.post<RegisterResponse>('https://vercel-backend-flame.vercel.app/api/mysqlManager/create-user', {
+        codigo,
+        correo,
+        dni,
+        contrasena
+      });
+
+      // Verifica si la respuesta incluye 'estado'
+      if (response.data && response.data.estado === 'exito') {
+        alert('Registro exitoso, por favor inicia sesión');
+        navigate('/login', { replace: true });
+      } else {
+        setError('Error en el registro. Por favor, verifica los datos.');
+      }
+    } catch (error) {
+      console.error('Error al registrar el usuario:', error);
+      setError('Ocurrió un error al procesar tu registro. Intenta nuevamente.');
+    }
+  };
+
+  return (
+    <div className="relative w-full h-screen flex items-center justify-center">
+      {/* Fondo difuminado y oscurecido */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url('/images/san-marcos-2.png')`,
+          filter: 'blur(0px)',  // Efecto difuminado
+          zIndex: -1,           // Asegurarse de que el fondo esté detrás de todo
+          backgroundSize: 'cover',  // Para cubrir todo el fondo
+          backgroundRepeat: 'no-repeat',  // Evitar repeticiones
+        }}
+      >
+        {/* Capa oscura sobre el fondo */}
+        <div className="absolute inset-0 bg-black opacity-65"></div>
+      </div>
+
+      <div className="bg-white shadow-lg rounded-lg flex" style={{ width: '700px', height: '500px' }}>
+        {/* Imagen al lado del registro */}
+        <div className="hidden md:block w-2/5">
+          <img
+            src="/images/login.png"
+            alt="FISI"
+            className="w-full h-full object-contain rounded-l-lg"
+          />
+        </div>
+
+        {/* Formulario de registro */}
+        <div className="w-full md:w-3/5 flex flex-col justify-center p-8">
+          {/* Sección del logo */}
+          <div className="flex justify-center">
+            <img
+              src="/images/logo-fisi.png"
+              alt="Logo FISI"
+              className="w-50 h-50 object-contain" // Ajustamos tamaño del logo
+            />
+          </div>
+          <h2 className="text-2xl font-bold text-center mb-6">Crea tu cuenta</h2>
+          <form onSubmit={handleRegister} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Código de estudiante"
+              value={codigo}
+              onChange={(e) => setCodigo(e.target.value)}
+              className="border p-2 w-full rounded"
+              required
+            />
+            <input
+              type="email"
+              placeholder="Correo institucional"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              className="border p-2 w-full rounded"
+              required
+            />
+            <input
+              type="text"
+              placeholder="DNI"
+              value={dni}
+              onChange={(e) => setDni(e.target.value)}
+              className="border p-2 w-full rounded"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Contraseña"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              className="border p-2 w-full rounded"
+              required
+            />
+
+            {/* Mensaje de error si algo falla */}
+            {error && <p className="text-red-600 text-center">{error}</p>}
+
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="bg-green-600 text-white py-2 px-6 rounded hover:bg-green-800 focus:outline-none"
+              >
+                Registrarse
+              </button>
+            </div>
+          </form>
+          <div className="text-center mt-4">
+            <p>¿Ya tienes cuenta?</p>
+            {/* Botón para redirigir al login */}
+            <button
+              onClick={() => navigate('/login')}
+              className="text-blue-800 hover:underline"
+            >
+              Inicia sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
