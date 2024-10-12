@@ -67,6 +67,13 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
         <div className="absolute inset-0 bg-black opacity-65"></div>
       </div>
 
+      {/* Enlace Volver */}
+      <div className="absolute top-4 left-4">
+        <Link to="/" className="text-white underline hover:text-blue-200">
+          Volver
+        </Link>
+      </div>
+
       <div className="bg-white shadow-lg rounded-lg flex" style={{ width: '700px', height: '500px' }}>
         <div className="hidden md:block w-2/5">
           <img src="/images/login.png" alt="FISI" className="w-50 h-50 object-contain rounded-l-lg" />
