@@ -11,7 +11,7 @@ export interface Tema {
   }
   
   export interface Respuesta {
-    id: number; // Asegúrate de incluir el id
+    id: number;
     autor: string;
     contenido: string;
   }
