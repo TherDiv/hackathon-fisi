@@ -9,6 +9,7 @@ import NavigationButton from './components/NavigationButton'; // Importar el com
 import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
 import Chatbot from './components/Chatbot'; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
+import PaginaFisi from './components/PaginaFisi'; // Importa la página principal
 import { Tema } from './types';
 import { useNavigate } from 'react-router-dom';
 
@@ -126,6 +127,9 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        {/* Ruta para la página principal (PaginaFisi) */}
+        <Route path="/" element={<PaginaFisi />} /> {/* Ruta principal */}
+        
         {/* Ruta para el login */}
         <Route
           path="/"
