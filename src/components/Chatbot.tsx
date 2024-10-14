@@ -112,7 +112,7 @@ const Chatbot: React.FC = () => {
     if (!usuario_id) return;
 
     try {
-      const title = `Consulta sobre ${messages[0]?.text || "tema"}`;
+      const title = `${messages[0]?.text || "tema"}`;
 
       const currentSession: Session = {
         session_id: sessionId!,
@@ -179,12 +179,12 @@ const Chatbot: React.FC = () => {
       {isMinimized ? (
         <button
           onClick={toggleMinimize}
-          className="fixed bottom-4 right-4 bg-red-800 text-white p-5 rounded-full shadow-lg z-50">
+          className="fixed bottom-4 right-4 bg-sky-800 text-white p-5 rounded-full shadow-lg z-50">
           <FaComments size={32} />
         </button>
       ) : (
         <div className="fixed bottom-0 right-0 m-4 w-[400px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
-          <div className="p-4 bg-red-900 text-white font-bold rounded-t-lg flex justify-between items-center">
+          <div className="p-4 bg-sky-900 text-white font-bold rounded-t-lg flex justify-between items-center">
             <span>¡Pregunta Fisiano!</span>
             <button onClick={toggleMinimize} className="text-white">
               <FaWindowMinimize size={14} />
@@ -194,7 +194,7 @@ const Chatbot: React.FC = () => {
           <div className="flex justify-between border-b">
             <button
               className={`p-2 w-1/2 text-center ${
-                activeTab === "new" ? "border-b-2 border-red-600 font-bold" : ""
+                activeTab === "new" ? "border-b-2 border-sky-600 font-bold" : ""
               }`}
               onClick={() => {
                 setActiveTab("new");
@@ -206,7 +206,7 @@ const Chatbot: React.FC = () => {
             <button
               className={`p-2 w-1/2 text-center ${
                 activeTab === "history"
-                  ? "border-b-2 border-red-600 font-bold"
+                  ? "border-b-2 border-sky-600 font-bold"
                   : ""
               }`}
               onClick={() => setActiveTab("history")}
@@ -222,7 +222,7 @@ const Chatbot: React.FC = () => {
                   key={index}
                   className={`mb-2 p-2 rounded ${
                     message.sender === "bot"
-                      ? "bg-red-100 text-left"
+                      ? "bg-sky-100 text-left"
                       : "bg-gray-300 text-right"
                   }`}
                 >
@@ -241,7 +241,7 @@ const Chatbot: React.FC = () => {
                   key={index}
                   className={`mb-2 p-2 rounded ${
                     message.sender === "bot"
-                      ? "bg-red-100 text-left"
+                      ? "bg-sky-100 text-left"
                       : "bg-gray-300 text-right"
                   }`}
                 >
@@ -265,7 +265,7 @@ const Chatbot: React.FC = () => {
                       e.stopPropagation(); // Evita que se active la selección de la sesión
                       handleDeleteSession(chat.session_id);
                     }}
-                    className="absolute top-2 right-2 text-red-600 hover:text-red-800"
+                    className="absolute top-2 right-2 text-sky-600 hover:text-sky-800"
                   >
                     <FaTimes />
                   </button>
@@ -287,7 +287,7 @@ const Chatbot: React.FC = () => {
               />
               <button
                 onClick={handleSendMessage}
-                className="bg-red-800 text-white p-2 rounded"
+                className="bg-sky-800 text-white p-2 rounded"
                 disabled={!sessionId || loading}
               >
                 {loading ? "..." : "Enviar"}
@@ -295,7 +295,7 @@ const Chatbot: React.FC = () => {
               {sessionId && (
                 <button
                   onClick={endSession}
-                  className="bg-red-600 text-white ml-4 p-2 rounded"
+                  className="bg-sky-600 text-white ml-4 p-2 rounded"
                 >
                   Terminar Sesión
                 </button>

@@ -120,7 +120,7 @@ const ChatbotInvitado: React.FC = () => {
         // Ventana del chatbot abierta
         <div className="fixed bottom-0 right-0 m-4 w-[400px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
           {/* Header del chatbot */}
-          <div className="p-4 bg-red-900 text-white font-bold rounded-t-lg flex justify-between items-center">
+          <div className="p-4 bg-red-700 text-white font-bold rounded-t-lg flex justify-between items-center">
             <span>Chat Invitado</span>
             <button onClick={toggleMinimize} className="text-white">
               <FaWindowMinimize size={16} />
