@@ -8,6 +8,7 @@ import AgregarRespuesta from './components/AgregarRespuesta';
 import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
 import Modal from './components/Modal'; // Importar el componente Modal
 import Login from './components/Login';
+import Register from './components/Register'; // Importa el componente Register
 import Chatbot from './components/Chatbot'; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
 import PaginaFisi from './components/PaginaFisi'; // Importa la página principal
 import { Tema } from './types';
@@ -127,16 +128,24 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Ruta para la página principal */}
-        <Route path="/" element={<PaginaFisi />} />
+       {/* Ruta para la página principal */}
+       <Route path="/" element={<PaginaFisi />} />
 
-        {/* Ruta para el login */}
-        <Route
-          path="/login"
-          element={
-            isAuthenticated ? <Navigate to="/foro" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />
-          }
-        />
+      {/* Ruta para el login */}
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? <Navigate to="/foro" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />
+        }
+      />
+
+      {/* Nueva ruta para el registro */}
+      <Route
+        path="/register"
+        element={
+          isAuthenticated ? <Navigate to="/foro" replace /> : <Register />
+        }
+      />
 
         {/* Ruta para el foro estudiantil */}
         <Route

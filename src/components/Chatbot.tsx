@@ -44,7 +44,6 @@ const Chatbot: React.FC = () => {
   useEffect(() => {
     // Verificar si el usuario está autenticado antes de iniciar la sesión
     if (!usuario_id) {
-      alert("Debes iniciar sesión para usar el chatbot.");
       navigate("/login"); // Redirigir al login si no está autenticado
       return;
     }

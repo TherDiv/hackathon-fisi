@@ -8,7 +8,7 @@ interface AgregarPreguntaProps {
 }
 
 const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose }) => {
-  const [nombre, setNombre] = useState('Anónimo');
+  const [nombre, setNombre] = useState('Paola Abal');
   const [pregunta, setPregunta] = useState('');
   const [contenido, setContenido] = useState('');
   const [topico, setTopico] = useState('');

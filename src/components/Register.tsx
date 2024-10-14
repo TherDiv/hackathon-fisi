@@ -1,10 +1,9 @@
-// src/components/Register.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 interface RegisterResponse {
-  estado: string; // Ajusta esto según la estructura real de la respuesta del servidor
+  estado: string; 
 }
 
 const Register: React.FC = () => {
@@ -19,7 +18,6 @@ const Register: React.FC = () => {
     e.preventDefault();
 
     try {
-      // Petición POST al backend para crear un nuevo usuario
       const response = await axios.post<RegisterResponse>('https://vercel-backend-flame.vercel.app/api/mysqlManager/create-user', {
         codigo,
         correo,
@@ -27,12 +25,9 @@ const Register: React.FC = () => {
         contrasena
       });
 
-      // Verifica si la respuesta incluye 'estado' y si el estado es 'exito'
       if (response.data && response.data.estado === 'exito') {
         alert('Registro exitoso, por favor inicia sesión');
         navigate('/login', { replace: true });
-      } else if (response.data && response.data.estado === 'usuario_existente') {
-        setError('El usuario ya existe. Por favor, inicia sesión.');
       } else {
         setError('Error en el registro. Por favor, verifica los datos.');
       }
@@ -49,17 +44,23 @@ const Register: React.FC = () => {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url('/images/san-marcos-2.png')`,
-          filter: 'blur(0px)',  // Efecto difuminado
-          zIndex: -1,           // Asegurarse de que el fondo esté detrás de todo
-          backgroundSize: 'cover',  // Para cubrir todo el fondo
-          backgroundRepeat: 'no-repeat',  // Evitar repeticiones
+          filter: 'blur(0px)', 
+          zIndex: -1,           
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat', 
         }}
       >
         <div className="absolute inset-0 bg-black opacity-65"></div>
       </div>
 
+      {/* Enlace Volver */}
+      <div className="absolute top-4 left-4">
+        <Link to="/" className="text-white underline hover:text-blue-200">
+          Volver
+        </Link>
+      </div>
+
       <div className="bg-white shadow-lg rounded-lg flex" style={{ width: '700px', height: '500px' }}>
-        {/* Imagen al lado del registro */}
         <div className="hidden md:block w-2/5">
           <img
             src="/images/login.png"
@@ -74,7 +75,7 @@ const Register: React.FC = () => {
             <img
               src="/images/logo-fisi.png"
               alt="Logo FISI"
-              className="w-50 h-50 object-contain"
+              className="w-50 h-50 object-contain" 
             />
           </div>
           <h2 className="text-2xl font-bold text-center mb-6">Crea tu cuenta</h2>
@@ -92,7 +93,7 @@ const Register: React.FC = () => {
             <input
               type="email"
               id="correo" 
-              name="correo" 
+              name="correo"
               placeholder="Correo institucional"
               value={correo}
               onChange={(e) => setCorreo(e.target.value)}
@@ -101,8 +102,8 @@ const Register: React.FC = () => {
             />
             <input
               type="text"
-              id="dni" 
-              name="dni" 
+              id="dni"
+              name="dni"
               placeholder="DNI"
               value={dni}
               onChange={(e) => setDni(e.target.value)}
@@ -112,7 +113,7 @@ const Register: React.FC = () => {
             <input
               type="password"
               id="contrasena" 
-              name="contrasena" 
+              name="contrasena"
               placeholder="Contraseña"
               value={contrasena}
               onChange={(e) => setContrasena(e.target.value)}
