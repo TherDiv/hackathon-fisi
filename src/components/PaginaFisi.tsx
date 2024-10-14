@@ -1,21 +1,15 @@
 // src/components/PaginaFisi.tsx
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import ChatbotInvitado from "./ChatbotInvitado"; // Importa el chatbot de invitados
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import ChatbotInvitado from './ChatbotInvitado'; // Importa el chatbot de invitados
 
 export default function PaginaFisi() {
   const navigate = useNavigate();
 
-  // Función para manejar el clic en "Facultad" y redirigir a /login
-  const handleFacultadClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    navigate("/login"); // Redirige a la página de login
-  };
-
   // Función para manejar el clic en "Foro Estudiantil" y redirigir a /login
   const handleForoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    navigate("/login"); // Redirige a la página de login
+    navigate('/login'); // Redirige a la página de login
   };
 
   return (
@@ -26,28 +20,13 @@ export default function PaginaFisi() {
           <img src="images/logo-fisi.png" alt="FISI Logo" width={250} height={250} className="mr-4" />
           <nav>
             <ul className="flex space-x-4">
-              {[
-                "Facultad",
-                "Pregrado",
-                "Posgrado",
-                "Investigación",
-                "Docentes",
-                "Estudiantes",
-                "Egresados",
-                "CERSEU",
-              ].map((item) => (
+              {['Facultad', 'Pregrado', 'Posgrado', 'Investigación', 'Docentes', 'Estudiantes', 'Egresados', 'CERSEU'].map((item) => (
                 <li key={item}>
-                  <a href="#" onClick={item === 'Facultad' ? handleFacultadClick : undefined} className="hover:underline">
-                    {item}
-                  </a>
+                  <a href="#" className="hover:underline">{item}</a>
                 </li>
               ))}
               <li>
-                <a
-                  href="#"
-                  onClick={handleForoClick}
-                  className="hover:underline font-bold"
-                >
+                <a href="#" onClick={handleForoClick} className="hover:underline font-bold">
                   Foro Estudiantil
                 </a>
               </li>
@@ -84,11 +63,10 @@ export default function PaginaFisi() {
           </div>
         </div>
 
-
         {/* Anuncios */}
         <section className="m-8">
           <h2 className="text-xl font-bold mb-4">Anuncios Importantes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"> {/* Reduce gap entre elementos */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               {
                 title: 'Comunicado: Vigencia del Bachillerato Automático',
@@ -108,19 +86,18 @@ export default function PaginaFisi() {
               },
             ].map((announcement, index) => (
               <div key={index} className="bg-white p-4 shadow-md rounded-lg">
-                <h3 className="font-semibold mb-2 text-gray-700">IMPORTANTE</h3>
-                <h4 className="font-bold mb-1 text-[#6b1d1d]">
-                  {announcement.title}
-                </h4>
-                <p className="text-sm text-[#000000]">{announcement.content}</p>
+                <h3 className="font-bold mb-2 text-[#6b1d1d]">IMPORTANTE</h3>
+                <h4 className="font-semibold mb-1">{announcement.title}</h4>
+                <p className="text-sm text-gray-700">{announcement.content}</p>
               </div>
             ))}
           </div>
         </section>
+
         {/* Services */}
         <section className="m-8">
           <h2 className="text-xl font-bold mb-4">Nuestros Servicios</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {/* Reduce el gap */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               {
                 title: 'Biblioteca',
@@ -154,7 +131,7 @@ export default function PaginaFisi() {
               },
             ].map((service, index) => (
               <div key={index} className="bg-white p-4 shadow-md rounded-lg">
-                <img src={service.image} alt={service.title} width={300} height={300} className="mb-4 rounded" /> {/* Cada servicio usa su propia imagen */}
+                <img src={service.image} alt={service.title} width={300} height={300} className="mb-4 rounded" />
                 <h3 className="font-semibold mb-2">{service.title}</h3>
                 <p className="text-sm text-gray-700">{service.description}</p>
               </div>
@@ -166,7 +143,7 @@ export default function PaginaFisi() {
 
       {/* Footer */}
       <footer className="bg-[#6b1d1d] text-white p-4">
-        <div className="container mx-auto flex justify-center space-x-4"> {/* Reduce espacio entre items */}
+        <div className="container mx-auto flex justify-center space-x-4">
           {['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram'].map((social, index) => (
             <a key={index} href="#" className="hover:underline">
               {social}
