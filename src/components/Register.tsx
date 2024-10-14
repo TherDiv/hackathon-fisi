@@ -1,52 +1,39 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 
 interface RegisterResponse {
-  estado: string; // Ajusta esto según la estructura real de la respuesta del servidor
+  estado: string; 
 }
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const [codigo, setCodigo] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [dni, setDni] = useState("");
-  const [contrasena, setContrasena] = useState("");
+  const [codigo, setCodigo] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [dni, setDni] = useState('');
+  const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Estado para manejar el envío del formulario
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setIsSubmitting(true); // Inicia el estado de envío
-
     try {
-      // Petición POST al backend para crear un nuevo usuario
-      const response = await axios.post<RegisterResponse>(
-        "https://vercel-backend-flame.vercel.app/api/mysqlManager/create-user",
-        {
-          codigo,
-          correo,
-          dni,
-          contrasena,
-        }
-      );
+      const response = await axios.post<RegisterResponse>('https://vercel-backend-flame.vercel.app/api/mysqlManager/create-user', {
+        codigo,
+        correo,
+        dni,
+        contrasena
+      });
 
-      // Verifica si la respuesta incluye 'estado'
-      if (response.data && response.data.estado === "exito") {
-        alert("Registro exitoso, por favor inicia sesión");
-        navigate("/login", { replace: true });
+      if (response.data && response.data.estado === 'exito') {
+        alert('Registro exitoso, por favor inicia sesión');
+        navigate('/login', { replace: true });
       } else {
-        setError("Error en el registro. Por favor, verifica los datos.");
+        setError('Error en el registro. Por favor, verifica los datos.');
       }
-    } catch (error: any) {
-      console.error(
-        "Error al registrar el usuario:",
-        error?.response?.data?.message || error.message
-      );
-      setError("Ocurrió un error al procesar tu registro. Intenta nuevamente.");
-    } finally {
-      setIsSubmitting(false); // Finaliza el estado de envío
+    } catch (error) {
+      console.error('Error al registrar el usuario:', error);
+      setError('Ocurrió un error al procesar tu registro. Intenta nuevamente.');
     }
   };
 
@@ -57,13 +44,12 @@ const Register: React.FC = () => {
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url('/images/san-marcos-2.png')`,
-          filter: "blur(0px)", // Efecto difuminado
-          zIndex: -1, // Asegurarse de que el fondo esté detrás de todo
-          backgroundSize: "cover", // Para cubrir todo el fondo
-          backgroundRepeat: "no-repeat", // Evitar repeticiones
+          filter: 'blur(0px)', 
+          zIndex: -1,           
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat', 
         }}
       >
-        {/* Capa oscura sobre el fondo */}
         <div className="absolute inset-0 bg-black opacity-65"></div>
       </div>
 
@@ -74,11 +60,7 @@ const Register: React.FC = () => {
         </Link>
       </div>
 
-      <div
-        className="bg-white shadow-lg rounded-lg flex"
-        style={{ width: "700px", height: "500px" }}
-      >
-        {/* Imagen al lado del registro */}
+      <div className="bg-white shadow-lg rounded-lg flex" style={{ width: '700px', height: '500px' }}>
         <div className="hidden md:block w-2/5">
           <img
             src="/images/login.png"
@@ -89,22 +71,19 @@ const Register: React.FC = () => {
 
         {/* Formulario de registro */}
         <div className="w-full md:w-3/5 flex flex-col justify-center p-8">
-          {/* Sección del logo */}
           <div className="flex justify-center">
             <img
               src="/images/logo-fisi.png"
               alt="Logo FISI"
-              className="w-50 h-50 object-contain" // Ajustamos tamaño del logo
+              className="w-50 h-50 object-contain" 
             />
           </div>
-          <h2 className="text-2xl font-bold text-center mb-6">
-            Crea tu cuenta
-          </h2>
+          <h2 className="text-2xl font-bold text-center mb-6">Crea tu cuenta</h2>
           <form onSubmit={handleRegister} className="space-y-4">
             <input
               type="text"
-              id="codigo"
-              name="codigo"
+              id="codigo" 
+              name="codigo" 
               placeholder="Código de estudiante"
               value={codigo}
               onChange={(e) => setCodigo(e.target.value)}
@@ -113,7 +92,7 @@ const Register: React.FC = () => {
             />
             <input
               type="email"
-              id="correo"
+              id="correo" 
               name="correo"
               placeholder="Correo institucional"
               value={correo}
@@ -133,7 +112,7 @@ const Register: React.FC = () => {
             />
             <input
               type="password"
-              id="contrasena"
+              id="contrasena" 
               name="contrasena"
               placeholder="Contraseña"
               value={contrasena}
@@ -142,14 +121,13 @@ const Register: React.FC = () => {
               required
             />
             {error && <p className="text-red-600 text-center">{error}</p>}
-
+            
             <div className="flex justify-center">
               <button
                 type="submit"
                 className="bg-green-600 text-white py-2 px-6 rounded hover:bg-green-800 focus:outline-none"
-                disabled={isSubmitting} // Deshabilitar el botón mientras se envía la solicitud
               >
-                {isSubmitting ? "Registrando..." : "Registrarse"}
+                Registrarse
               </button>
             </div>
           </form>
@@ -157,7 +135,7 @@ const Register: React.FC = () => {
           <div className="text-center mt-4">
             <p>¿Ya tienes cuenta?</p>
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate('/login')}
               className="text-blue-800 hover:underline"
             >
               Inicia sesión

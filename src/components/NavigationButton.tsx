@@ -1,20 +1,20 @@
-import React from 'react';
+// src/components/NavigationButton.tsx
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const NavigationButton: React.FC = () => {
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   // Función para manejar el cierre de sesión
 
   const handleLogout = () => {
-    // Elimina el estado de autenticación del localStorage
     localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('usuario_id'); // Si también estás usando usuario_id
-    localStorage.removeItem('hash_id');    // Si también estás usando hash_id
-
-    // Actualiza el estado de autenticación global, si estás usando uno (asegúrate de que se refleje)
-    navigate('/login'); // Redirige al inicio de sesión
-    window.location.reload(); // Forzar la recarga de la página para asegurarse de que la sesión se ha cerrado
+    localStorage.removeItem('usuario_id');
+    localStorage.removeItem('hash_id');
+    setShowModal(false);
+    navigate('/login');
+    window.location.reload(); // Recarga para asegurarse de que se cierra la sesión
   };
 
   return (
@@ -24,8 +24,8 @@ const NavigationButton: React.FC = () => {
       aria-label="Barra de navegación"
     >
       {/* Título Foro FISI alineado a la izquierda */}
-      <h1 className="text-2xl font-bold ml-4" aria-label="Título del foro">Foro FISI</h1>
-      
+      <h1 className="text-2xl font-bold ml-4">Foro FISI</h1>
+
       {/* Secciones alineadas a la derecha */}
       <div className="flex space-x-0 mr-4 h-full">
         {/* Notificaciones */}
@@ -38,14 +38,36 @@ const NavigationButton: React.FC = () => {
         </button>
 
         {/* Cerrar sesión */}
-        <button 
-          onClick={handleLogout} 
+        <button
+          onClick={() => setShowModal(true)}
           className="hover:bg-sky-800 p-4 w-auto h-full flex items-center justify-center transition-all ease-in-out duration-200"
-          aria-label="Cerrar sesión"
         >
           Cerrar sesión
         </button>
       </div>
+
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h3 className="text-xl mb-4">¿Estás seguro que deseas cerrar sesión?</h3>
+            <div className="flex justify-center space-x-4">
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800"
+              >
+                Sí, cerrar sesión
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

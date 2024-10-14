@@ -22,17 +22,8 @@ export default function PaginaFisi() {
     <div className="bg-gray-100 min-h-screen">
       {/* Header */}
       <header className="bg-[#6b1d1d] text-white py-3">
-        {" "}
-        {/* Reduce el padding vertical */}
         <div className="container mx-auto flex justify-between items-center">
-          <img
-            src="images/logo-fisi.png"
-            alt="FISI Logo"
-            width={250}
-            height={250}
-            className="mr-4"
-          />{" "}
-          {/* Ajuste tamaño imagen */}
+          <img src="images/logo-fisi.png" alt="FISI Logo" width={250} height={250} className="mr-4" />
           <nav>
             <ul className="flex space-x-4">
               {[
@@ -46,13 +37,7 @@ export default function PaginaFisi() {
                 "CERSEU",
               ].map((item) => (
                 <li key={item}>
-                  <a
-                    href="#"
-                    onClick={
-                      item === "Facultad" ? handleFacultadClick : undefined
-                    }
-                    className="hover:underline"
-                  >
+                  <a href="#" onClick={item === 'Facultad' ? handleFacultadClick : undefined} className="hover:underline">
                     {item}
                   </a>
                 </li>
@@ -72,8 +57,8 @@ export default function PaginaFisi() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto mt-6 px-4">
-        {/* Banner */}
+      <main>
+        {/* Banner estilo w-full */}
         <div className="bg-[#6b1d1d] text-white">
           <div className="container mx-auto py-8 px-4 flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-4 md:mb-0">
@@ -99,32 +84,27 @@ export default function PaginaFisi() {
           </div>
         </div>
 
+
         {/* Anuncios */}
-        <section className="mb-6">
+        <section className="m-8">
           <h2 className="text-xl font-bold mb-4">Anuncios Importantes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {" "}
-            {/* Reduce gap entre elementos */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"> {/* Reduce gap entre elementos */}
             {[
               {
-                title: "Comunicado: Vigencia del Bachillerato Automático",
-                content:
-                  "Se informa a los alumnos de la Facultad de Ingeniería de Sistemas e Informática, que el 30 de diciembre de 2023...",
+                title: 'Comunicado: Vigencia del Bachillerato Automático',
+                content: 'Se informa a los alumnos de la Facultad de Ingeniería de Sistemas e Informática, que el 30 de diciembre de 2023...',
               },
               {
-                title: "Comunicado sobre Declaración Jurada de Intereses",
-                content:
-                  "FUNCIONARIOS Y SERVIDORES PÚBLICOS DE LA UNMSM QUE DECLARAN CINCO O MENOS PARIENTES EN SU DECLARACIÓN JURADA...",
+                title: 'Comunicado sobre Declaración Jurada de Intereses',
+                content: 'FUNCIONARIOS Y SERVIDORES PÚBLICOS DE LA UNMSM QUE DECLARAN CINCO O MENOS PARIENTES EN SU DECLARACIÓN JURADA...',
               },
               {
-                title: "Documento: Código de Ética y Política de Conflicto",
-                content:
-                  "Se informa a la comunidad académica de la UNMSM sobre la política de conflicto de intereses y código de ética...",
+                title: 'Documento: Código de Ética y Política de Conflicto',
+                content: 'Se informa a la comunidad académica de la UNMSM sobre la política de conflicto de intereses y código de ética...',
               },
               {
-                title: "Requisitos para tramitar el Grado Académico",
-                content:
-                  "Se informa sobre los requisitos para tramitar el Grado Académico de Bachiller y el Título Profesional...",
+                title: 'Requisitos para tramitar el Grado Académico',
+                content: 'Se informa sobre los requisitos para tramitar el Grado Académico de Bachiller y el Título Profesional...',
               },
             ].map((announcement, index) => (
               <div key={index} className="bg-white p-4 shadow-md rounded-lg">
@@ -138,77 +118,60 @@ export default function PaginaFisi() {
           </div>
         </section>
         {/* Services */}
-        <section className="mb-6">
+        <section className="m-8">
           <h2 className="text-xl font-bold mb-4">Nuestros Servicios</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {" "}
-            {/* Reduce el gap */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> {/* Reduce el gap */}
             {[
               {
-                title: "Biblioteca",
-                description:
-                  "La biblioteca de la Facultad ofrece recursos para facilitar y proveer...",
-                image: "images/biblioteca.jpg", // Imagen para Biblioteca
+                title: 'Biblioteca',
+                description: 'La biblioteca de la Facultad ofrece recursos para facilitar y proveer...',
+                image: 'images/biblioteca.jpg' // Imagen para Biblioteca
               },
               {
-                title: "Bienestar",
-                description:
-                  "La Unidad de Bienestar promueve la calidad de vida mediante servicios y programas...",
-                image: "images/bienestar.jpg", // Imagen para Bienestar
+                title: 'Bienestar',
+                description: 'La Unidad de Bienestar promueve la calidad de vida mediante servicios y programas...',
+                image: 'images/bienestar.jpg' // Imagen para Bienestar
               },
               {
-                title: "CENPRO",
-                description:
-                  "El Centro de Producción desarrolla actividades de producción de bienes y servicios...",
-                image: "images/cenpro.jpg", // Imagen para CENPRO
+                title: 'CENPRO',
+                description: 'El Centro de Producción desarrolla actividades de producción de bienes y servicios...',
+                image: 'images/cenpro.jpg' // Imagen para CENPRO
               },
               {
-                title: "Estadística e Informática",
-                description:
-                  "Asesoramiento informático a las diversas unidades que conforman la Facultad...",
-                image: "images/estadistica.jpg", // Imagen para Estadística e Informática
+                title: 'Estadística e Informática',
+                description: 'Asesoramiento informático a las diversas unidades que conforman la Facultad...',
+                image: 'images/estadistica.jpg' // Imagen para Estadística e Informática
               },
               {
-                title: "UNAYOE",
-                description:
-                  "La Unidad de Asesoría y Orientación ofrece apoyo académico a los estudiantes...",
-                image: "images/unayoe.jpg", // Imagen para UNAYOE
+                title: 'UNAYOE',
+                description: 'La Unidad de Asesoría y Orientación ofrece apoyo académico a los estudiantes...',
+                image: 'images/unayoe.jpg' // Imagen para UNAYOE
               },
               {
-                title: "OCAA",
-                description:
-                  "La Oficina de Calidad Académica y Acreditación garantiza la calidad en la Facultad...",
-                image: "images/ocaa.jpg", // Imagen para OCAA
+                title: 'OCAA',
+                description: 'La Oficina de Calidad Académica y Acreditación garantiza la calidad en la Facultad...',
+                image: 'images/ocaa.jpg' // Imagen para OCAA
               },
             ].map((service, index) => (
               <div key={index} className="bg-white p-4 shadow-md rounded-lg">
-                <img
-                  src={service.image}
-                  alt={service.title}
-                  width={180}
-                  height={120}
-                  className="mb-4 rounded"
-                />
+                <img src={service.image} alt={service.title} width={300} height={300} className="mb-4 rounded" /> {/* Cada servicio usa su propia imagen */}
                 <h3 className="font-semibold mb-2">{service.title}</h3>
                 <p className="text-sm text-gray-700">{service.description}</p>
               </div>
             ))}
           </div>
         </section>
+
       </main>
 
       {/* Footer */}
       <footer className="bg-[#6b1d1d] text-white p-4">
-        <div className="container mx-auto flex justify-center space-x-4">
-          {" "}
-          {/* Reduce espacio entre items */}
-          {["Facebook", "Twitter", "LinkedIn", "WhatsApp", "Telegram"].map(
-            (social, index) => (
-              <a key={index} href="#" className="hover:underline">
-                {social}
-              </a>
-            )
-          )}
+        <div className="container mx-auto flex justify-center space-x-4"> {/* Reduce espacio entre items */}
+          {['Facebook', 'Twitter', 'LinkedIn', 'WhatsApp', 'Telegram'].map((social, index) => (
+            <a key={index} href="#" className="hover:underline">
+              {social}
+            </a>
+          ))}
         </div>
       </footer>
 

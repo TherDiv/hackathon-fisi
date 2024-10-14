@@ -6,7 +6,7 @@ interface AgregarRespuestaProps {
 }
 
 const AgregarRespuesta: React.FC<AgregarRespuestaProps> = ({ onAgregarRespuesta }) => {
-  const [autor, setAutor] = useState('Usuario');
+  const [autor, setAutor] = useState('Paola Abal');
   const [contenido, setContenido] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {

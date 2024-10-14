@@ -1,23 +1,18 @@
 // src/App.tsx
-import React, { useState, useEffect } from "react"; // Añadir `useEffect` aquí
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-} from "react-router-dom";
-import { useParams } from "react-router-dom"; // Importar `useParams` por separado
-import TemaLista from "./components/TemaLista";
-import AgregarPregunta from "./components/AgregarPregunta";
-import AgregarRespuesta from "./components/AgregarRespuesta";
-import NavigationButton from "./components/NavigationButton"; // Importar el componente del título fijo
-import Modal from "./components/Modal"; // Importar el componente Modal
-import Login from "./components/Login";
-import Register from "./components/Register"; // Asegúrate de importar el componente de registro
-import Chatbot from "./components/Chatbot"; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
-import PaginaFisi from "./components/PaginaFisi"; // Importa la página principal
-import { Tema } from "./types";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react'; // Añadir `useEffect` aquí
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom'; // Importar `useParams` por separado
+import TemaLista from './components/TemaLista';
+import AgregarPregunta from './components/AgregarPregunta';
+import AgregarRespuesta from './components/AgregarRespuesta'; 
+import NavigationButton from './components/NavigationButton'; // Importar el componente del título fijo
+import Modal from './components/Modal'; // Importar el componente Modal
+import Login from './components/Login';
+import Register from './components/Register'; // Importa el componente Register
+import Chatbot from './components/Chatbot'; // La "C" debe ser mayúscula si el archivo es `Chatbot.tsx`
+import PaginaFisi from './components/PaginaFisi'; // Importa la página principal
+import { Tema } from './types';
+import { useNavigate } from 'react-router-dom';
 
 const App: React.FC = () => {
   const [temas, setTemas] = useState<Tema[]>([
@@ -165,28 +160,24 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Ruta para la página principal (Página FISI) */}
-        <Route path="/" element={<PaginaFisi />} />
+       {/* Ruta para la página principal */}
+       <Route path="/" element={<PaginaFisi />} />
 
-        {/* Ruta para el login */}
-        <Route
-          path="/login"
-          element={
-            isAuthenticated ? (
-              <Navigate to="/foro" replace />
-            ) : (
-              <Login setIsAuthenticated={setIsAuthenticated} />
-            )
-          }
-        />
+      {/* Ruta para el login */}
+      <Route
+        path="/login"
+        element={
+          isAuthenticated ? <Navigate to="/foro" replace /> : <Login setIsAuthenticated={setIsAuthenticated} />
+        }
+      />
 
-        {/* Ruta para el registro */}
-        <Route
-          path="/register"
-          element={
-            isAuthenticated ? <Navigate to="/foro" replace /> : <Register />
-          }
-        />
+      {/* Nueva ruta para el registro */}
+      <Route
+        path="/register"
+        element={
+          isAuthenticated ? <Navigate to="/foro" replace /> : <Register />
+        }
+      />
 
         {/* Ruta para el foro estudiantil */}
         <Route
