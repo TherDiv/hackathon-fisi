@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaComments, FaTimes } from "react-icons/fa";
-import { FaWindowMinimize } from 'react-icons/fa'; // Importa FaWindowMinimize
-
+import { FaWindowMinimize } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 interface Message {
   sender: "bot" | "user";
@@ -36,14 +36,29 @@ const Chatbot: React.FC = () => {
   const [chatHistory, setChatHistory] = useState<Session[]>([]); // Historial de sesiones
   const [selectedSession, setSelectedSession] = useState<Session | null>(null); // Sesión seleccionada
 
-  const usuario_id = "123"; // ID de usuario estático (puedes obtenerlo dinámicamente según tu autenticación)
+  const navigate = useNavigate(); // Para redirigir al login si no está autenticado
+
+  // Recuperar el usuario_id del localStorage
+  const usuario_id = localStorage.getItem("usuario_id");
+
+  useEffect(() => {
+    // Verificar si el usuario está autenticado antes de iniciar la sesión
+    if (!usuario_id) {
+      alert("Debes iniciar sesión para usar el chatbot.");
+      navigate("/login"); // Redirigir al login si no está autenticado
+      return;
+    }
+
+    // Iniciar una nueva sesión al cargar el componente
+    startSession();
+  }, []);
 
   // Función para iniciar una nueva sesión de chat
   const startSession = async () => {
     try {
       const response = await axios.post<NewSessionResponse>(
         "https://vercel-backend-flame.vercel.app/api/chatbot/new-session",
-        { usuario_id },
+        { usuario_id }, // Incluye el usuario_id en la solicitud
         { headers: { "Content-Type": "application/json" } }
       );
       setSessionId(response.data.session_id);
@@ -52,11 +67,6 @@ const Chatbot: React.FC = () => {
       console.error("Error al iniciar la sesión:", error);
     }
   };
-
-  useEffect(() => {
-    // Iniciar sesión al cargar el componente
-    startSession();
-  }, []);
 
   // Función para enviar un mensaje al bot
   const handleSendMessage = async () => {
@@ -72,7 +82,7 @@ const Chatbot: React.FC = () => {
     try {
       const response = await axios.post<AskResponse>(
         "https://vercel-backend-flame.vercel.app/api/chatbot/ask",
-        { session_id: sessionId, message: input, usuario_id },
+        { session_id: sessionId, message: input, usuario_id }, // Enviar el usuario_id
         { headers: { "Content-Type": "application/json" } }
       );
       setMessages((prevMessages) => [
@@ -100,8 +110,10 @@ const Chatbot: React.FC = () => {
 
   // Función para terminar la sesión actual y guardarla en el historial
   const endSession = async () => {
+    if (!usuario_id) return;
+
     try {
-      const title = `Consulta sobre ${messages[0]?.text || "tema"}`; // Asignar un título a la sesión
+      const title = `Consulta sobre ${messages[0]?.text || "tema"}`;
 
       const currentSession: Session = {
         session_id: sessionId!,
@@ -133,7 +145,7 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  // Función para eliminar una sesión
+  // Función para eliminar una sesión del historial
   const handleDeleteSession = async (session_id: string) => {
     try {
       await axios.post(
@@ -171,15 +183,13 @@ const Chatbot: React.FC = () => {
           className="fixed bottom-4 right-4 bg-red-800 text-white p-5 rounded-full shadow-lg z-50">
           <FaComments size={32} />
         </button>
-
       ) : (
         <div className="fixed bottom-0 right-0 m-4 w-[400px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
           <div className="p-4 bg-red-900 text-white font-bold rounded-t-lg flex justify-between items-center">
             <span>¡Pregunta Fisiano!</span>
-              {/* Cambia FaTimes por FaWindowMinimize */}
-              <button onClick={toggleMinimize} className="text-white">
-                <FaWindowMinimize size={14} />
-              </button>
+            <button onClick={toggleMinimize} className="text-white">
+              <FaWindowMinimize size={14} />
+            </button>
           </div>
 
           <div className="flex justify-between border-b">
