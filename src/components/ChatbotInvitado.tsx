@@ -143,6 +143,9 @@ const ChatbotInvitado: React.FC = () => {
             ))}
           </div>
 
+          {/* Mensaje de error */}
+          {error && <div className="text-red-500 text-center">{error}</div>}
+
           {/* Input para enviar mensajes */}
           <div className="p-4 border-t border-gray-300 flex items-center">
             <input
