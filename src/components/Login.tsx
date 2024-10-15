@@ -19,12 +19,24 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState<string | null>(null);
+  
+  const MODO_PRUEBA = true; // Activar modo prueba (acepta cualquier login)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (MODO_PRUEBA) {
+      // Si está en modo prueba, omitir validación y permitir el acceso
+      localStorage.setItem('isAuthenticated', 'true');
+      setIsAuthenticated(true);
+      localStorage.setItem('usuario_id', '123'); // ID ficticio
+      localStorage.setItem('hash_id', 'dummyHash'); // Hash ficticio
+      navigate('/foro', { replace: true });
+      return;
+    }
+
     try {
-      // Definir el tipo de respuesta que esperamos
+      // Definir el tipo de respuesta que esperamos del servidor
       const response = await axios.post<LoginResponse>('https://vercel-backend-flame.vercel.app/api/mysqlManager/login', {
         correo,
         contrasena,
