@@ -16,51 +16,19 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
-  const [correo, setCorreo] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [correo, setCorreo] = useState('');  // No requerimos que se ingrese
+  const [contrasena, setContrasena] = useState('');  // No requerimos que se ingrese
   const [error, setError] = useState<string | null>(null);
   
-  const MODO_PRUEBA = true; // Activar modo prueba (acepta cualquier login)
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (MODO_PRUEBA) {
-      // Si está en modo prueba, omitir validación y permitir el acceso
-      localStorage.setItem('isAuthenticated', 'true');
-      setIsAuthenticated(true);
-      localStorage.setItem('usuario_id', '123'); // ID ficticio
-      localStorage.setItem('hash_id', 'dummyHash'); // Hash ficticio
-      navigate('/foro', { replace: true });
-      return;
-    }
-
-    try {
-      // Definir el tipo de respuesta que esperamos del servidor
-      const response = await axios.post<LoginResponse>('https://vercel-backend-flame.vercel.app/api/mysqlManager/login', {
-        correo,
-        contrasena,
-      });
-
-      // Verificar si la respuesta permite el acceso
-      if (response.data.Acceso === 'Permitido') {
-        // Guardar la autenticación en localStorage y actualizar el estado
-        localStorage.setItem('isAuthenticated', 'true');
-        setIsAuthenticated(true);
-
-        // También puedes guardar el usuario_id o hash_id si lo necesitas en tu aplicación
-        localStorage.setItem('usuario_id', response.data.usuario_id.toString());
-        localStorage.setItem('hash_id', response.data.hash_id);
-
-        // Redirigir al foro
-        navigate('/foro', { replace: true });
-      } else {
-        setError('Correo o contraseña incorrectos.');
-      }
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      setError('Ocurrió un error al procesar tu inicio de sesión. Intenta nuevamente.');
-    }
+    // Permitir iniciar sesión sin ingresar datos
+    localStorage.setItem('isAuthenticated', 'true');
+    setIsAuthenticated(true);
+    localStorage.setItem('usuario_id', '123'); // ID ficticio
+    localStorage.setItem('hash_id', 'dummyHash'); // Hash ficticio
+    navigate('/foro', { replace: true });
   };
 
   return (
@@ -98,21 +66,21 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
           </div>
           <h2 className="text-2xl font-bold text-center mb-6">Bienvenido al foro de la FISI</h2>
           <form onSubmit={handleLogin} className="space-y-4">
+            {/* Input de correo pero sin validación de contenido */}
             <input
               type="email"
-              placeholder="Correo institucional"
+              placeholder="Correo institucional (opcional)"
               value={correo}
               onChange={(e) => setCorreo(e.target.value)}
               className="border p-2 w-full rounded"
-              required
             />
+            {/* Input de contraseña pero sin validación de contenido */}
             <input
               type="password"
-              placeholder="Contraseña"
+              placeholder="Contraseña (opcional)"
               value={contrasena}
               onChange={(e) => setContrasena(e.target.value)}
               className="border p-2 w-full rounded"
-              required
             />
             <div className="flex justify-center">
               <button type="submit" className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-800 focus:outline-none">
@@ -120,6 +88,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
               </button>
             </div>
           </form>
+
           {error && <p className="text-red-600 text-center mt-4">{error}</p>}
 
           <div className="text-center mt-4">
