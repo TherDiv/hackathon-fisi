@@ -4,8 +4,8 @@ Este repositorio contiene la implementación de Fito el Fisibot, un asistente vi
 ## Clonar Repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/foro-fisi.git
-cd foro-fisi
+git clone https://github.com/TherDiv/hackathon-fisi.git
+cd hackathon-fisi
 npm install
 npm run start
 ```
