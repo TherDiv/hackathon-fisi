@@ -6,7 +6,7 @@ interface AgregarRespuestaProps {
 }
 
 const AgregarRespuesta: React.FC<AgregarRespuestaProps> = ({ onAgregarRespuesta }) => {
-  const [autor, setAutor] = useState('Paola Abal');
+  const autor = 'Maria Perez'; // Autor fijo
   const [contenido, setContenido] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -20,13 +20,8 @@ const AgregarRespuesta: React.FC<AgregarRespuestaProps> = ({ onAgregarRespuesta 
   return (
     <form onSubmit={handleSubmit} className="mt-4 p-4 borde rounded-md shadow-md">
       <h3 className="font-bold text-lg mb-2">Añadir Respuesta</h3>
-      <input
-        type="text"
-        placeholder="Nombre (opcional)"
-        value={autor}
-        onChange={(e) => setAutor(e.target.value)}
-        className="border mb-2 p-2 w-full rounded"
-      />
+      {/* Mostrar el nombre del autor de forma estática */}
+      <p className="mb-2"><strong>Usuario: </strong>{autor}</p>
       <textarea
         placeholder="Escribe tu respuesta"
         value={contenido}

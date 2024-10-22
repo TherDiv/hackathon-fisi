@@ -16,7 +16,7 @@ const App: React.FC = () => {
       id: 1,
       titulo: '¿Cuándo se realizarán las inscripciones para los nuevos proyectos de investigación?',
       autor: 'Juan Pérez',
-      fecha: '01/10/2024',
+      fecha: '01/ 10/2024',
       contenido: 'Hola, alguien sabe cuándo comienzan las inscripciones para los nuevos proyectos de investigación en la FISI? Estoy interesado en unirme a un proyecto en el área de Ingeniería de Software. Agradezco cualquier información.',
       respuestas: [
         {
@@ -385,7 +385,7 @@ const Foro: React.FC<ForoProps> = ({ temas, openModal, handleFiltroChange, filtr
           >
             <h3 className="text-lg font-bold">{tema.titulo}</h3>
             <p>Autor: {tema.autor} | Fecha: {tema.fecha} | Tópico: {tema.topico}</p>
-            <p className="mt-2 text-gray-700">{tema.contenido}</p>
+            <p className="mt-2 text-gray-700">{tema.contenido}</p> 
             <p><strong>Respuestas:</strong> {tema.respuestas.length}</p>
           </div>
         ))}

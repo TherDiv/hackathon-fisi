@@ -8,7 +8,7 @@ interface AgregarPreguntaProps {
 }
 
 const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose }) => {
-  const [nombre, setNombre] = useState('');
+  const nombre = 'Maria Perez'; // Nombre fijo
   const [pregunta, setPregunta] = useState('');
   const [contenido, setContenido] = useState('');
   const [topico, setTopico] = useState('');
@@ -27,7 +27,7 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
     const newTema: Tema = {
       id: Date.now(),
       titulo: pregunta,
-      autor: nombre.trim() ? nombre : 'Anónimo', // Nombre por defecto si no se especifica
+      autor: nombre, // Usar el nombre fijo
       fecha: new Date().toLocaleDateString(),
       contenido: contenido,
       respuestas: [],
@@ -40,7 +40,7 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
 
   // Manejar el cierre del modal y advertir al usuario si se han llenado campos
   const handleClose = () => {
-    if (nombre || pregunta || contenido || topico) {
+    if (pregunta || contenido || topico) {
       const confirmar = window.confirm('¿Estás seguro de que deseas cerrar? Los datos no guardados se perderán.');
       if (!confirmar) return;
     }
@@ -59,16 +59,9 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
         <div className="p-4">
           {error && <p className="text-red-600 text-center">{error}</p>}
 
+          {/* Mostrar el nombre del autor de forma estática */}
           <div className="mb-4">
-            <label htmlFor="nombre" className="font-bold block mb-1">Nombre:</label>
-            <input
-              type="text"
-              id="nombre"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              className="border w-full p-2 rounded"
-              placeholder="Tu nombre (opcional)"
-            />
+            <p className="mb-2"><strong>Usuario: </strong>{nombre}</p>
           </div>
 
           <div className="mb-4">
