@@ -197,7 +197,8 @@ const App: React.FC = () => {
 
   // Funciones para abrir y cerrar el modal.
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => setIsModalOpen(false)
+  
 
   // Manejar cambios en el filtro de tópicos.
   const handleFiltroChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -384,8 +385,8 @@ const Foro: React.FC<ForoProps> = ({ temas, openModal, handleFiltroChange, filtr
           >
             <h3 className="text-lg font-bold">{tema.titulo}</h3>
             <p>Autor: {tema.autor} | Fecha: {tema.fecha} | Tópico: {tema.topico}</p>
-            <p><strong>Respuestas:</strong> {tema.respuestas.length}</p>
             <p className="mt-2 text-gray-700">{tema.contenido}</p>
+            <p><strong>Respuestas:</strong> {tema.respuestas.length}</p>
           </div>
         ))}
       </div>
