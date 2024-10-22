@@ -8,14 +8,20 @@ interface AgregarPreguntaProps {
 }
 
 const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose }) => {
-  const [nombre, setNombre] = useState('Paola Abal');
+  const [nombre, setNombre] = useState('Paola Abal'); // Nombre por defecto
   const [pregunta, setPregunta] = useState('');
   const [contenido, setContenido] = useState('');
   const [topico, setTopico] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!pregunta.trim() || !topico) return;
+    setError(null); // Limpiar errores anteriores
+
+    if (!pregunta.trim() || !topico) {
+      setError('Por favor, completa todos los campos obligatorios.');
+      return;
+    }
 
     const newTema: Tema = {
       id: Date.now(),
@@ -27,8 +33,8 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
       topico: topico,
     };
 
-    agregarTema(newTema);
-    onClose(); // Cerrar el modal o formulario
+    agregarTema(newTema); // Agregar la nueva pregunta localmente
+    onClose(); // Cerrar el modal después de añadir
   };
 
   return (
@@ -38,13 +44,15 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
         {/* Barra roja con el título y la X de cerrar */}
         <div className="bg-sky-800 text-white text-lg font-bold p-3 rounded-t-md flex justify-between items-center">
           Agregar Pregunta
-          <button onClick={onClose} className="text-white">
+          <button onClick={onClose} type="button" className="text-white">
             <FaTimes size={24} />
           </button>
         </div>
 
         {/* Campos del formulario */}
         <div className="p-4">
+          {error && <p className="text-red-600 text-center">{error}</p>}
+
           <div className="mb-4">
             <label htmlFor="nombre" className="font-bold block mb-1">Nombre:</label>
             <input
@@ -86,6 +94,7 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
           <div className="mb-4">
             <label htmlFor="contenido" className="font-bold block mb-1">Contenido:</label>
             <textarea
+              id="contenido"
               placeholder="Contenido adicional sobre tu pregunta"
               value={contenido}
               onChange={(e) => setContenido(e.target.value)}
@@ -93,11 +102,12 @@ const AgregarPregunta: React.FC<AgregarPreguntaProps> = ({ agregarTema, onClose 
               rows={4}
               style={{ resize: 'none', height: '100px' }}  // Desactivar resize y establecer una altura fija
             ></textarea>
-            <div className="absolute bottom-6 right-4">
-              <button type="submit" className="bg-sky-800 text-white p-2 rounded w-auto ">
-                Añadir
-              </button>
-            </div>
+          </div>
+
+          <div className="absolute bottom-6 right-4">
+            <button type="submit" className="bg-sky-800 text-white p-2 rounded w-auto">
+              Añadir
+            </button>
           </div>
         </div>
       </form>
