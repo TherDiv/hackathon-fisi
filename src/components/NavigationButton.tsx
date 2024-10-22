@@ -47,7 +47,7 @@ const NavigationButton: React.FC<NavigationButtonProps> = ({ setIsAuthenticated 
                 <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">
                   Sí
                 </button>
-                <button onClick={() => setShowModal(false)} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+                <button onClick={() => setShowModal(false)} className="bg-gray-500 px-4 py-2 rounded hover:bg-gray-600">
                   Cancelar
                 </button>
               </div>
