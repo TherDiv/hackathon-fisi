@@ -300,7 +300,7 @@ const RenderDetalleTema: React.FC<RenderDetalleTemaProps> = ({ temas, agregarRes
         <p className="text-gray-600">
           Autor: {tema.autor} | Fecha: {tema.fecha}
         </p>
-        <p className="mt-2">{tema.contenido}</p>
+        <p className="mt-2">{tema.contenido}</p> {/* Muestra el contenido del tema */}
 
         <h3 className="font-bold text-lg mt-4">Respuestas:</h3>
         <div className="mt-2">
@@ -367,9 +367,9 @@ const Foro: React.FC<ForoProps> = ({ temas, openModal, handleFiltroChange, filtr
             className="cursor-pointer border p-4 my-2 rounded-md shadow-md hover:bg-gray-100 transition"
           >
             <h3 className="text-lg font-bold">{tema.titulo}</h3>
-            <p>Autor: {tema.autor} | Fecha: {tema.fecha} |Tópico: {tema.topico}</p>
-            <p className="mt-2 mb-2 text-gray-700">{tema.contenido}</p>
+            <p>Autor: {tema.autor} | Fecha: {tema.fecha} | Tópico: {tema.topico}</p>
             <p><strong>Respuestas:</strong> {tema.respuestas.length}</p>
+            <p className="mt-2 text-gray-700">{tema.contenido}</p>
           </div>
         ))}
       </div>
