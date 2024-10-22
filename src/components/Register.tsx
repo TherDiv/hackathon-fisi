@@ -1,3 +1,4 @@
+// src/components/Register.tsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -18,12 +19,20 @@ const Register: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post<RegisterResponse>('https://vercel-backend-flame.vercel.app/api/mysqlManager/create-user', {
-        codigo,
-        correo,
-        dni,
-        contrasena
-      });
+      const response = await axios.post<RegisterResponse>(
+        'https://vercel-backend-flame.vercel.app/api/mysqlManager/create-user',
+        {
+          codigo,
+          correo,
+          dni,
+          contrasena
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        }
+      );
 
       if (response.data && response.data.estado === 'exito') {
         alert('Registro exitoso, por favor inicia sesión');
@@ -62,28 +71,20 @@ const Register: React.FC = () => {
 
       <div className="bg-white shadow-lg rounded-lg flex" style={{ width: '700px', height: '500px' }}>
         <div className="hidden md:block w-2/5">
-          <img
-            src="/images/login.png"
-            alt="FISI"
-            className="w-full h-full object-contain rounded-l-lg"
-          />
+          <img src="/images/login.png" alt="FISI" className="w-full h-full object-contain rounded-l-lg" />
         </div>
 
         {/* Formulario de registro */}
         <div className="w-full md:w-3/5 flex flex-col justify-center p-8">
           <div className="flex justify-center">
-            <img
-              src="/images/logo-fisi.png"
-              alt="Logo FISI"
-              className="w-50 h-50 object-contain" 
-            />
+            <img src="/images/logo-fisi.png" alt="Logo FISI" className="w-50 h-50 object-contain" />
           </div>
           <h2 className="text-2xl font-bold text-center mb-6">Crea tu cuenta</h2>
           <form onSubmit={handleRegister} className="space-y-4">
             <input
               type="text"
-              id="codigo" 
-              name="codigo" 
+              id="codigo"
+              name="codigo"
               placeholder="Código de estudiante"
               value={codigo}
               onChange={(e) => setCodigo(e.target.value)}
@@ -92,7 +93,7 @@ const Register: React.FC = () => {
             />
             <input
               type="email"
-              id="correo" 
+              id="correo"
               name="correo"
               placeholder="Correo institucional"
               value={correo}
@@ -112,7 +113,7 @@ const Register: React.FC = () => {
             />
             <input
               type="password"
-              id="contrasena" 
+              id="contrasena"
               name="contrasena"
               placeholder="Contraseña"
               value={contrasena}

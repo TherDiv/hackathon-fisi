@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaComments, FaTimes } from "react-icons/fa";
 import { FaWindowMinimize } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import ReactMarkdown from "react-markdown"; // Importa react-markdown
 
 interface Message {
   sender: "bot" | "user";
@@ -226,7 +227,8 @@ const Chatbot: React.FC = () => {
                       : "bg-gray-300 text-right"
                   }`}
                 >
-                  {message.text}
+                  {/* Usar ReactMarkdown para procesar el texto */}
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               ))}
             </div>
@@ -245,7 +247,8 @@ const Chatbot: React.FC = () => {
                       : "bg-gray-300 text-right"
                   }`}
                 >
-                  {message.text}
+                  {/* Usar ReactMarkdown para procesar el texto */}
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               ))}
             </div>
