@@ -1,10 +1,10 @@
 // src/components/Chatbot.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { FaComments, FaTimes } from "react-icons/fa";
 import { FaWindowMinimize } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
-import ReactMarkdown from "react-markdown"; // Importa react-markdown
+import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   sender: "bot" | "user";
@@ -15,7 +15,7 @@ interface Session {
   session_id: string;
   messages: Message[];
   date: string;
-  title: string; // Título generado por la IA para la sesión
+  title: string;
 }
 
 interface NewSessionResponse {
@@ -33,32 +33,28 @@ const Chatbot: React.FC = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [isMinimized, setIsMinimized] = useState<boolean>(true);
-  const [activeTab, setActiveTab] = useState<"new" | "history">("new"); // Pestaña activa (Nueva conversación o Historial)
-  const [chatHistory, setChatHistory] = useState<Session[]>([]); // Historial de sesiones
-  const [selectedSession, setSelectedSession] = useState<Session | null>(null); // Sesión seleccionada
+  const [activeTab, setActiveTab] = useState<"new" | "history">("new");
+  const [chatHistory, setChatHistory] = useState<Session[]>([]);
+  const [selectedSession, setSelectedSession] = useState<Session | null>(null);
 
-  const navigate = useNavigate(); // Para redirigir al login si no está autenticado
+  const chatWindowRef = useRef<HTMLDivElement | null>(null);
 
-  // Recuperar el usuario_id del localStorage
+  const navigate = useNavigate();
   const usuario_id = localStorage.getItem("usuario_id");
 
   useEffect(() => {
-    // Verificar si el usuario está autenticado antes de iniciar la sesión
     if (!usuario_id) {
-      navigate("/login"); // Redirigir al login si no está autenticado
+      navigate("/login");
       return;
     }
-
-    // Iniciar una nueva sesión al cargar el componente
     startSession();
   }, []);
 
-  // Función para iniciar una nueva sesión de chat
   const startSession = async () => {
     try {
       const response = await axios.post<NewSessionResponse>(
         "https://vercel-backend-flame.vercel.app/api/chatbot/new-session",
-        { usuario_id }, // Incluye el usuario_id en la solicitud
+        { usuario_id },
         { headers: { "Content-Type": "application/json" } }
       );
       setSessionId(response.data.session_id);
@@ -68,21 +64,16 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  // Función para enviar un mensaje al bot
   const handleSendMessage = async () => {
     if (!input.trim() || !sessionId) return;
-
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { sender: "user", text: input },
-    ]);
+    setMessages((prevMessages) => [...prevMessages, { sender: "user", text: input }]);
     setInput("");
     setLoading(true);
 
     try {
       const response = await axios.post<AskResponse>(
         "https://vercel-backend-flame.vercel.app/api/chatbot/ask",
-        { session_id: sessionId, message: input, usuario_id }, // Enviar el usuario_id
+        { session_id: sessionId, message: input, usuario_id },
         { headers: { "Content-Type": "application/json" } }
       );
       setMessages((prevMessages) => [
@@ -100,7 +91,6 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  // Manejar la tecla Enter para enviar el mensaje
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -108,7 +98,32 @@ const Chatbot: React.FC = () => {
     }
   };
 
-  // Función para terminar la sesión actual y guardarla en el historial
+  const toggleMinimize = () => {
+    setIsMinimized(!isMinimized);
+  };
+
+  const handleSelectSession = (session: Session) => {
+    setSelectedSession(session);
+  };
+
+  const handleDeleteSession = async (session_id: string) => {
+    try {
+      await axios.post(
+        "https://vercel-backend-flame.vercel.app/api/chatbot/delete-my-session",
+        {
+          usuario_id,
+          session_id,
+        }
+      );
+
+      setChatHistory((prevHistory) =>
+        prevHistory.filter((session) => session.session_id !== session_id)
+      );
+    } catch (error) {
+      console.error("Error al eliminar la sesión:", error);
+    }
+  };
+
   const endSession = async () => {
     if (!usuario_id) return;
 
@@ -122,7 +137,6 @@ const Chatbot: React.FC = () => {
         title,
       };
 
-      // Llamada al API para eliminar la sesión (opcional según el backend)
       await axios.post(
         "https://vercel-backend-flame.vercel.app/api/chatbot/delete-my-session",
         {
@@ -131,48 +145,40 @@ const Chatbot: React.FC = () => {
         }
       );
 
-      // Guardar la sesión en el historial
       setChatHistory((prevHistory) => [...prevHistory, currentSession]);
 
-      // Reiniciar el estado
       setSessionId(null);
       setMessages([]);
 
-      // Iniciar una nueva sesión automáticamente
       startSession();
     } catch (error) {
       console.error("Error al terminar la sesión:", error);
     }
   };
 
-  // Función para eliminar una sesión del historial
-  const handleDeleteSession = async (session_id: string) => {
-    try {
-      await axios.post(
-        "https://vercel-backend-flame.vercel.app/api/chatbot/delete-my-session",
-        {
-          usuario_id,
-          session_id,
-        }
-      );
+  // Resizing Functionality
+  const handleResizeMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const chatWindow = chatWindowRef.current;
+    if (chatWindow) {
+      const startWidth = chatWindow.offsetWidth;
+      const startHeight = chatWindow.offsetHeight;
+      const startX = e.clientX;
+      const startY = e.clientY;
 
-      // Elimina la sesión del historial
-      setChatHistory((prevHistory) =>
-        prevHistory.filter((session) => session.session_id !== session_id)
-      );
-    } catch (error) {
-      console.error("Error al eliminar la sesión:", error);
+      const doDrag = (moveEvent: MouseEvent) => {
+        chatWindow.style.width = `${startWidth + moveEvent.clientX - startX}px`;
+        chatWindow.style.height = `${startHeight + moveEvent.clientY - startY}px`;
+      };
+
+      const stopDrag = () => {
+        window.removeEventListener("mousemove", doDrag);
+        window.removeEventListener("mouseup", stopDrag);
+      };
+
+      window.addEventListener("mousemove", doDrag);
+      window.addEventListener("mouseup", stopDrag);
     }
-  };
-
-  // Minimizar o maximizar el chatbot
-  const toggleMinimize = () => {
-    setIsMinimized(!isMinimized);
-  };
-
-  // Seleccionar una sesión del historial
-  const handleSelectSession = (session: Session) => {
-    setSelectedSession(session);
   };
 
   return (
@@ -184,13 +190,21 @@ const Chatbot: React.FC = () => {
           <FaComments size={32} />
         </button>
       ) : (
-        <div className="fixed bottom-0 right-0 m-4 w-[400px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
-          <div className="p-4 bg-sky-900 text-white font-bold rounded-t-lg flex justify-between items-center">
+        <div
+          ref={chatWindowRef}
+          className="fixed bottom-0 right-0 m-4 bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col overflow-auto"
+          style={{ width: "400px", height: "500px", resize: "none" }}
+        >
+          <div className="p-4 bg-sky-900 text-white font-bold rounded-t-lg flex justify-between items-center cursor-move">
             <span>¡Pregunta Fisiano!</span>
             <button onClick={toggleMinimize} className="text-white">
               <FaWindowMinimize size={14} />
             </button>
           </div>
+
+          <div className="absolute top-0 left-0 cursor-nwse-resize" 
+               style={{ width: "10px", height: "10px", zIndex: 1000 }}
+               onMouseDown={handleResizeMouseDown}></div>
 
           <div className="flex justify-between border-b">
             <button
@@ -199,16 +213,14 @@ const Chatbot: React.FC = () => {
               }`}
               onClick={() => {
                 setActiveTab("new");
-                setSelectedSession(null); // Resetea la selección cuando cambias a "Nueva Conversación"
+                setSelectedSession(null);
               }}
             >
               Nueva Conversación
             </button>
             <button
               className={`p-2 w-1/2 text-center ${
-                activeTab === "history"
-                  ? "border-b-2 border-sky-600 font-bold"
-                  : ""
+                activeTab === "history" ? "border-b-2 border-sky-600 font-bold" : ""
               }`}
               onClick={() => setActiveTab("history")}
             >
@@ -216,18 +228,16 @@ const Chatbot: React.FC = () => {
             </button>
           </div>
 
+          {/* Chat UI */}
           {activeTab === "new" ? (
             <div className="flex-grow p-4 h-64 min-h-[200px] overflow-y-auto">
               {messages.map((message, index) => (
                 <div
                   key={index}
                   className={`mb-2 p-2 rounded ${
-                    message.sender === "bot"
-                      ? "bg-sky-100 text-left"
-                      : "bg-gray-300 text-right"
+                    message.sender === "bot" ? "bg-sky-100 text-left" : "bg-gray-300 text-right"
                   }`}
                 >
-                  {/* Usar ReactMarkdown para procesar el texto */}
                   <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               ))}
@@ -242,34 +252,21 @@ const Chatbot: React.FC = () => {
                 <div
                   key={index}
                   className={`mb-2 p-2 rounded ${
-                    message.sender === "bot"
-                      ? "bg-sky-100 text-left"
-                      : "bg-gray-300 text-right"
+                    message.sender === "bot" ? "bg-sky-100 text-left" : "bg-gray-300 text-right"
                   }`}
                 >
-                  {/* Usar ReactMarkdown para procesar el texto */}
                   <ReactMarkdown>{message.text}</ReactMarkdown>
                 </div>
               ))}
             </div>
           ) : (
             <div className="flex-grow p-4 h-64 min-h-[200px] overflow-y-auto">
-              {chatHistory.map((chat, index) => (
-                <div
-                  key={index}
-                  className="border p-2 mb-2 rounded cursor-pointer relative"
-                  onClick={() => handleSelectSession(chat)}
-                >
-                  <p className="font-bold">{chat.title}</p>
-                  <p className="text-xs text-gray-500">Fecha: {chat.date}</p>
-                  {/* Botón "X" para eliminar la sesión */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Evita que se active la selección de la sesión
-                      handleDeleteSession(chat.session_id);
-                    }}
-                    className="absolute top-2 right-2 text-sky-600 hover:text-sky-800"
-                  >
+              {chatHistory.map((session) => (
+                <div key={session.session_id}>
+                  <button onClick={() => handleSelectSession(session)}>
+                    {session.title}
+                  </button>
+                  <button onClick={() => handleDeleteSession(session.session_id)}>
                     <FaTimes />
                   </button>
                 </div>
@@ -277,8 +274,8 @@ const Chatbot: React.FC = () => {
             </div>
           )}
 
-          {activeTab === "new" && sessionId && (
-            <div className="p-4 border-t border-gray-300 flex items-center">
+          {sessionId && (
+            <div className="p-4 border-t flex items-center">
               <input
                 type="text"
                 value={input}
@@ -286,23 +283,13 @@ const Chatbot: React.FC = () => {
                 onKeyPress={handleKeyPress}
                 className="flex-grow p-2 border border-gray-300 rounded mr-2"
                 placeholder="Escribe tu pregunta..."
-                disabled={!sessionId || loading}
               />
-              <button
-                onClick={handleSendMessage}
-                className="bg-sky-800 text-white p-2 rounded"
-                disabled={!sessionId || loading}
-              >
+              <button onClick={handleSendMessage} className="bg-sky-800 text-white p-2 rounded">
                 {loading ? "..." : "Enviar"}
               </button>
-              {sessionId && (
-                <button
-                  onClick={endSession}
-                  className="bg-sky-600 text-white ml-4 p-2 rounded"
-                >
-                  Terminar Sesión
-                </button>
-              )}
+              <button onClick={endSession} className="bg-red-600 text-white ml-2 p-2 rounded">
+                Terminar Sesión
+              </button>
             </div>
           )}
         </div>

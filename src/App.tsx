@@ -23,7 +23,7 @@ const App: React.FC = () => {
       fecha: '01/10/2024',
       contenido: 'Hola, alguien sabe cuándo empiezan las fechas de matrícula para el próximo ciclo? Escuché que cambiaron los plazos, pero no estoy seguro. Agradecería cualquier información, especialmente sobre las fechas y qué documentos necesito tener listos.',
       respuestas: [],
-      topico: 'Matrícula'
+      topico: 'Matrícula' // Añadir la propiedad topico
     },
     {
       id: 2,
@@ -32,9 +32,63 @@ const App: React.FC = () => {
       fecha: '02/10/2024',
       contenido: 'Hola a todos! Estoy interesada en aplicar a una beca internacional, pero no tengo muy claro por dónde empezar. ¿Alguien ya ha pasado por este proceso y me podría decir qué documentos piden y si hay algún requisito especial? Cualquier ayuda sería genial :)',
       respuestas: [],
-      topico: 'Becas'
+      topico: 'Becas' // Añadir la propiedad topico
     },
-    // Puedes seguir agregando más temas...
+    {
+      id: 3,
+      titulo: '¿Qué hacer si tengo que dar exámenes de aplazados?',
+      autor: 'Carlos',
+      fecha: '03/10/2024',
+      contenido: 'Chicos, tengo que dar los exámenes de aplazados y la verdad estoy un poco perdido. ¿Alguien sabe cómo va eso? ¿Hay que inscribirse en algún sitio o simplemente aparecen las fechas en el sistema? Si alguno ha pasado por esto antes, agradecería sus consejos.',
+      respuestas: [],
+      topico: 'Aplazados' // Añadir la propiedad topico
+    },
+    // Repite lo mismo para los demás objetos Tema...
+    {
+      id: 4,
+      titulo: '¿Cómo puedo pedir una prórroga para la matrícula?',
+      autor: 'Ana',
+      fecha: '04/10/2024',
+      contenido: 'El otro día me comentaron que se puede pedir una prórroga para la matrícula si uno tiene problemas para pagar a tiempo. ¿Alguien sabe cómo hacer esto? ¿Es complicado o te ponen muchas trabas? Cualquier experiencia que puedan compartir me sería muy útil!',
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad topico
+    },
+    {
+      id: 5,
+      titulo: 'Documentos para la matrícula, ¿qué necesito exactamente?',
+      autor: 'María',
+      fecha: '05/10/2024',
+      contenido: 'Hola, estoy tratando de organizarme para la matrícula, pero no estoy segura de qué documentos necesito tener listos. ¿Alguien tiene la lista completa o sabe si este año piden algo diferente? Prefiero estar preparada antes de que empiecen las fechas.',
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad topico
+    },
+    {
+      id: 6,
+      titulo: '¿Cómo se puede recuperar un curso aplazado?',
+      autor: 'Luis',
+      fecha: '06/10/2024',
+      contenido: 'Alguien me puede ayudar con esto: ¿cómo es el proceso para recuperar un curso aplazado? Me dijeron que se puede volver a llevar el próximo ciclo, pero no sé si hay algún costo adicional o si tengo que hacer algún trámite especial antes. Cualquier dato me ayuda.',
+      respuestas: [],
+      topico: 'Aplazados' // Añadir la propiedad topico
+    },
+    {
+      id: 7,
+      titulo: '¿Puedo cambiar la carga de cursos después de haberme matriculado?',
+      autor: 'Sofía',
+      fecha: '07/10/2024',
+      contenido: 'Hola chicos, ¿saben si es posible cambiar los cursos después de hacer la matrícula? Me preocupa que me haya inscrito en demasiados créditos y no sé si aún puedo ajustar la carga antes de que empiece el ciclo. ¿Alguien ha hecho esto antes?',
+      respuestas: [],
+      topico: 'Matrícula' // Añadir la propiedad topico
+    },
+    {
+      id: 8,
+      titulo: 'Problemas para pagar la matrícula, ¿qué opciones hay?',
+      autor: 'Diego',
+      fecha: '08/10/2024',
+      contenido: 'Hola, estoy teniendo algunos problemas para pagar la matrícula a tiempo y quería saber si alguien sabe qué opciones tengo. ¿Se puede pedir algún tipo de financiamiento o hay becas para estas situaciones? Si alguien ya pasó por algo parecido, agradecería cualquier consejo.',
+      respuestas: [],
+      topico: 'Becas' // Añadir la propiedad topico
+    }
   ]);
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);

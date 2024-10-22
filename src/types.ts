@@ -15,4 +15,10 @@ export interface Tema {
     autor: string;
     contenido: string;
   }
+
+  // src/types.ts
+  export interface AddQuestionResponse {
+    estado: string;
+  }
+
   
