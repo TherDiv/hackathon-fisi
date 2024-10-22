@@ -130,9 +130,7 @@ const Login: React.FC<LoginProps> = ({ setIsAuthenticated }) => {
           {/* Enlace para registrarse */}
           <div className="text-center mt-2">
             <p>¿No tienes cuenta?</p>
-            <Link to="/register" className="text-blue-800 hover:underline">
-              Regístrate
-            </Link>
+            <span className="text-gray-500">Crear</span>
           </div>
         </div>
       </div>
