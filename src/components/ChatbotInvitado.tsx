@@ -1,5 +1,5 @@
 // src/components/ChatbotInvitado.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { FaComments, FaWindowMinimize } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown'; // Importar ReactMarkdown
@@ -25,6 +25,13 @@ const ChatbotInvitado: React.FC = () => {
   const [isMinimized, setIsMinimized] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null); // Manejo de errores
+
+  const chatbotRef = useRef<HTMLDivElement | null>(null);
+  const isResizing = useRef<boolean>(false);
+  const startX = useRef<number>(0);
+  const startY = useRef<number>(0);
+  const startWidth = useRef<number>(400); // Width inicial
+  const startHeight = useRef<number>(500); // Height inicial
 
   const startNewSession = async () => {
     try {
@@ -101,6 +108,40 @@ const ChatbotInvitado: React.FC = () => {
     setIsMinimized(!isMinimized);
   };
 
+  // Inicia el redimensionamiento
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    isResizing.current = true;
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+
+    if (chatbotRef.current) {
+      startWidth.current = chatbotRef.current.offsetWidth;
+      startHeight.current = chatbotRef.current.offsetHeight;
+    }
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  // Redimensionar la ventana
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isResizing.current || !chatbotRef.current) return;
+
+    const dx = startX.current - e.clientX;
+    const dy = startY.current - e.clientY;
+
+    chatbotRef.current.style.width = `${startWidth.current + dx}px`;
+    chatbotRef.current.style.height = `${startHeight.current + dy}px`;
+  };
+
+  // Finaliza el redimensionamiento
+  const handleMouseUp = () => {
+    isResizing.current = false;
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
   return (
     <>
       {isMinimized ? (
@@ -111,12 +152,21 @@ const ChatbotInvitado: React.FC = () => {
           <FaComments size={32} />
         </button>
       ) : (
-        <div className="fixed bottom-0 right-0 m-4 w-[400px] h-[500px] bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col">
-          <div className="p-4 bg-red-800 text-white font-bold rounded-t-lg flex justify-between items-center">
+        <div
+          ref={chatbotRef}
+          className="fixed bottom-0 right-0 m-4 bg-white border border-gray-300 rounded-lg shadow-lg z-50 flex flex-col"
+          style={{ width: "400px", height: "500px" }}
+        >
+          <div className="p-4 bg-red-800 text-white font-bold rounded-t-lg flex justify-between items-center relative">
             <span>Chat Invitado</span>
             <button onClick={toggleMinimize} className="text-white">
               <FaWindowMinimize size={16} />
             </button>
+            <div
+              onMouseDown={handleMouseDown}
+              className="absolute top-0 left-0 cursor-nwse-resize p-2"
+              style={{ cursor: "nwse-resize" }}
+            />
           </div>
 
           {/* Mostrar mensajes */}
