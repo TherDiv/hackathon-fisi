@@ -1,50 +1,22 @@
-# React + TypeScript + Vite
+# Foro FISI - Fito el Fisibot
+Este repositorio contiene la implementación de Fito el Fisibot, un asistente virtual para el foro estudiantil de la Facultad de Ingeniería de Sistemas e Informática (FISI) de la Universidad Nacional Mayor de San Marcos (UNMSM). El proyecto incluye un sistema de foro donde los estudiantes pueden realizar preguntas, participar en discusiones y recibir asistencia automatizada a través de un chatbot inteligente.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Clonar Repositorio
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+git clone https://github.com/TherDiv/hackathon-fisi.git
+cd hackathon-fisi
+npm install
+npm run start
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Mas Informacion
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### Frontend
+El frontend está desarrollado con React y TypeScript, proporcionando una interfaz interactiva y moderna. Utiliza Tailwind CSS para el diseño responsivo y estilizado. Los usuarios pueden registrarse, iniciar sesión, participar en el foro y utilizar el chatbot, todo integrado en una interfaz amigable y fácil de navegar.
+
+### Backend
+El backend está construido sobre Node.js con Express y utiliza una base de datos MySQL para gestionar los usuarios, las preguntas y respuestas del foro. El chatbot Fito el Fisibot interactúa con la API REST del backend para gestionar las sesiones de chat, utilizando endpoints diseñados para generar respuestas automáticas basadas en las consultas de los usuarios.
+Repositorio: [https://github.com/albertGil21/ApiChatbotForo.git](https://github.com/albertGil21/ApiChatbotForo.git)
